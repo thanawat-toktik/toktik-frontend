@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+REPO_NAME="thanawat-toktik/toktik-frontend"
+PKG_NAME="toktik-frontend"
+
+docker buildx build \
+    --no-cache \
+    --platform linux/amd64,linux/arm64/v8 \
+    --tag "ghcr.io/$REPO_NAME/$PKG_NAME:$(git rev-parse --short=6 head)" \
+    --tag "ghcr.io/$REPO_NAME/$PKG_NAME:latest" \
+    --push \
+    $PROJECT_ROOT/toktik-frontend/
+
