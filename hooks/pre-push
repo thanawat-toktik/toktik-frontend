@@ -5,7 +5,9 @@ REPO_NAME="thanawat-toktik/toktik-frontend"
 PKG_NAME="toktik-fe"
 
 docker buildx build \
+    --no-cache \
     --platform linux/amd64,linux/arm64/v8 \
+    --label "org.opencontainers.image.source=https://github.com/thanawat-toktik/toktik-frontend" \
     --tag "ghcr.io/$REPO_NAME/$PKG_NAME:$(git rev-parse --short=6 head)" \
     --tag "ghcr.io/$REPO_NAME/$PKG_NAME:latest" \
     --push \
