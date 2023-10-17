@@ -60,8 +60,7 @@
 </template>
 
 <script>
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
+import { v4 } from "uuid";
 export default {
   data() {
     return {
@@ -74,28 +73,28 @@ export default {
   },
   methods: {
     async onSubmit() {
-      // Create S3-compatible object storage instance
-      const clientParams = {
-        endpoint: process.env.VUE_APP_S3_RAW_ENDPOINT,
-        region: process.env.VUE_APP_S3_REGION,
-        credentials: {
-          accessKeyId: process.env.VUE_APP_S3_ACCESS_KEY_ID,
-          secretAccessKey: process.env.VUE_APP_S3_SECRET_ACCESS_KEY,
-        },
-      };
-      const s3 = new S3Client(clientParams);
+      const fileName = `${v4()}-${this.form.file.name}`;
+      const formData = new FormData();
+      formData.append("key", fileName);
 
-      // Upload file to S3-compatible object storage
-      const fileName = `${Date.now()}-${this.form.file.name}`;
-      const putObjectParams = {
-        Bucket: process.env.VUE_APP_S3_BUCKET_NAME,
-        Key: fileName,
-        Body: this.form.file,
-      };
-      const result = await s3.send(new PutObjectCommand(putObjectParams));
+      const response = await this.axios({
+        method: "POST",
+        url: `${process.env.VUE_APP_BACKEND_HOST}/video/upload-psurl/`,
+        data: formData,
+      });
+
+      const presignedUrl = response.data.url;
+      const result = await this.axios({
+        method: "PUT",
+        url: presignedUrl,
+        data: this.form.file,
+        headers: {
+          "x-amz-acl": "public-read",
+        },
+      });
 
       // Handle successful upload
-      console.log(`File uploaded successfully: ${result.Buckets}`);
+      console.log(`Response: ${result}`);
     },
   },
 };
