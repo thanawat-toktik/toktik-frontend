@@ -24,7 +24,7 @@
             label-for="caption"
             label-cols="1"
             label-align="right"
-            description="Caption, a slightly longer short summary of what your video is about. No longer than 300 characters."
+            description="Caption, a slightly longer short summary of what your video is about. No longer than 100 characters."
             style="text-align: left"
           >
             <b-form-input
