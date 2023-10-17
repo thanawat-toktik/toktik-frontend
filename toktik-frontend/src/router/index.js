@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LogInView from '../views/LogInView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import UploadVideoView from '../views/UploadVideo.vue'
+import UploadVideoView from '../views/UploadVideoView.vue'
 
 Vue.use(VueRouter)
 
