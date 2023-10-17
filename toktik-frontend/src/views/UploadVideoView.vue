@@ -73,18 +73,18 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const fileName = `${v4()}-${this.form.file.name}`;
-      const formData = new FormData();
-      formData.append("key", fileName);
+      const s3ObjectName = v4();
+      const presignedUrlFormData = new FormData();
+      presignedUrlFormData.append("key", s3ObjectName);
 
       const response = await this.axios({
         method: "POST",
         url: `${process.env.VUE_APP_BACKEND_HOST}/video/upload-psurl/`,
-        data: formData,
+        data: presignedUrlFormData,
       });
 
-      const presignedUrl = response.data.url;
-      const result = await this.axios({
+      const presignedUrl = await response.data.url;
+      const result = this.axios({
         method: "PUT",
         url: presignedUrl,
         data: this.form.file,
@@ -93,8 +93,29 @@ export default {
         },
       });
 
-      // Handle successful upload
-      console.log(`Response: ${result}`);
+      result.then(
+        // eslint-disable-next-line no-unused-vars
+        (response) => {
+          console.log("Success!");
+        },
+        (errorResponse) => {
+          console.error(errorResponse);
+          return;
+        }
+      );
+
+      const updateDBFormData = new FormData();
+      updateDBFormData.append("title", this.form.title);
+      updateDBFormData.append("caption", this.form.caption);
+      updateDBFormData.append("s3_key", s3ObjectName);
+
+      const updateDBResponse = await this.axios({
+        method: "POST",
+        url: `${process.env.VUE_APP_BACKEND_HOST}/video/update-db/`,
+        data: updateDBFormData,
+      });
+
+      console.log(updateDBResponse);
     },
   },
 };
