@@ -8,9 +8,15 @@ import VueAxios from "vue-axios";
 import router from './router'
 
 Vue.config.productionTip = false;
+
 Vue.use(VueAxios, axios);
 
 new Vue({
   router,
   render: (h) => h(App),
 }).$mount("#app");
+
+let token = localStorage.getItem('jwt-token')
+if (token) {
+  Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}

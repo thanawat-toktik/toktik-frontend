@@ -66,10 +66,16 @@ export default {
           method: "POST",
           url: `${process.env.VUE_APP_BACKEND_HOST}/auth/jwt/create/`,
           data: formData,
+          credentials: "include"
           // withCredentials: true
         });
 
-        console.log(`Response: ${response}`);
+        console.log(`Response: ${JSON.stringify(response.data)}`);
+
+        // after login, include jwt token to every header
+        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
+        localStorage.setItem( 'jwt-token', response.data.access );
+        localStorage.setItem( 'jwt-token-refresh', response.data.refresh );
 
       } catch (error) {
         this.error = 'An error occurred during login. Please try again.';

@@ -109,12 +109,12 @@ export default {
           data: formData,
         });
 
-        console.log(`Response: ${response}`);
+        console.log(`Response: ${JSON.stringify(response.data)}`);
 
-        if (!response.data) {
-          console.log(response)
-          throw new Error('Did not receive expected data');
-        }
+        // if (!response.data) {
+        //   console.log(response)
+        //   throw new Error('Did not receive expected data');
+        // }
         
         // Registered success
         // redirect to log in page
