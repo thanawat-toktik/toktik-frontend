@@ -61,7 +61,6 @@
             label-cols="1"
             label-align="right"
             style="text-align: left"
-            description="Enter a valid Email"
           >
             <b-form-input
               id="password"
