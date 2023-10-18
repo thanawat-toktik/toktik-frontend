@@ -46,7 +46,7 @@ const router = new VueRouter({
 
 router.beforeEach( async (to, from, next) => {
   console.log(to)
-  if (to.name == "Log-In" || to.name == "home" ) {
+  if (to.name == "Log-In" || to.name == "home" || to.name == "Register" ) {
     next()
   }
   
