@@ -44,4 +44,20 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach( async (to, from, next) => {
+  console.log(to)
+  if (to.name == "Log-In" || to.name == "home" ) {
+    next()
+  }
+  
+  const token = localStorage.getItem("jwt-token")
+  const refresh_token = localStorage.getItem("jwt-token-refresh")
+  // if no token (both) --> redirect to login
+  if (!token && !refresh_token) {
+    return { name: "Log-In" }
+  }
+  next()
+
+})
+
 export default router

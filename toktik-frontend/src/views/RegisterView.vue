@@ -82,6 +82,8 @@
 </template>
 
 <script>
+import router from '@/router';
+
 export default {
   data() {
     return {
@@ -94,28 +96,30 @@ export default {
   },
   methods: {
     async onSubmit() {
-
       try {
-        const response = await fetch('http://localhost:8001/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: this.username,
-            displayname: this.displayname,
-            email: this.email,
-            password: this.password
-          })
+        const formData = new FormData();
+        formData.append("username", this.username);
+        formData.append("display_name", this.displayname);
+        formData.append("email", this.email);
+        formData.append("password", this.password);
+        
+        const response = await this.axios({
+          method: "POST",
+          url: `${process.env.VUE_APP_BACKEND_HOST}/auth/register/`,
+          data: formData,
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        console.log(`Response: ${JSON.stringify(response.data)}`);
 
-        const data = await response.json();
-        console.log( data )
-        // Do something with the response data
+        // if (!response.data) {
+        //   console.log(response)
+        //   throw new Error('Did not receive expected data');
+        // }
+        
+        // Registered success
+        // redirect to log in page
+        await router.push({ name: "Log-In" });
+        
       } catch (error) {
         this.error = 'An error occurred during registration. Please try again.';
         console.error('Error:', error);

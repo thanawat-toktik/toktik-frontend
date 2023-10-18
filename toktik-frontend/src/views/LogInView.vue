@@ -58,26 +58,25 @@ export default {
   methods: {
     async onSubmit() {
       try {
-        console.log(this.email)
-        console.log(this.password)
-        const response = await fetch('http://localhost:8001/auth/jwt/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password
-          })
+        const formData = new FormData();
+        formData.append("email", this.email);
+        formData.append("password", this.password);
+
+        const response = await this.axios({
+          method: "POST",
+          url: `${process.env.VUE_APP_BACKEND_HOST}/auth/jwt/create/`,
+          data: formData,
+          credentials: "include"
+          // withCredentials: true
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        console.log(`Response: ${JSON.stringify(response.data)}`);
 
-        const data = await response.json();
-        console.log( data )
-        // Do something with the response data
+        // after login, include jwt token to every header
+        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
+        localStorage.setItem( 'jwt-token', response.data.access );
+        localStorage.setItem( 'jwt-token-refresh', response.data.refresh );
+
       } catch (error) {
         this.error = 'An error occurred during login. Please try again.';
         console.error('Error:', error);
