@@ -24,13 +24,12 @@
             label-for="caption"
             label-cols="1"
             label-align="right"
-            description="Caption, a slightly longer short summary of what your video is about. No longer than 300 characters."
+            description="Caption, a slightly longer short summary of what your video is about. No longer than 100 characters."
             style="text-align: left"
           >
             <b-form-input
               id="caption"
               v-model="form.caption"
-              required
               placeholder="Enter caption"
             ></b-form-input>
           </b-form-group>
@@ -55,6 +54,10 @@
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
       </b-card>
+
+      <b-modal v-model="showModal" title="Upload Successful">
+        <p>Your video has been uploaded successfully!</p>
+      </b-modal>
     </b-container>
   </div>
 </template>
@@ -69,21 +72,23 @@ export default {
         caption: "",
         file: null,
       },
+      showModal: false,
     };
   },
   methods: {
     async onSubmit() {
-      const fileName = `${v4()}-${this.form.file.name}`;
-      const formData = new FormData();
-      formData.append("key", fileName);
+      const s3ObjectName = v4();
+      const presignedUrlFormData = new FormData();
+      presignedUrlFormData.append("key", s3ObjectName);
 
       const response = await this.axios({
         method: "POST",
         url: `${process.env.VUE_APP_BACKEND_HOST}/video/upload-psurl/`,
-        data: formData,
+        data: presignedUrlFormData,
       });
 
       const presignedUrl = response.data.url;
+      // eslint-disable-next-line no-unused-vars
       const result = await this.axios({
         method: "PUT",
         url: presignedUrl,
@@ -93,8 +98,20 @@ export default {
         },
       });
 
-      // Handle successful upload
-      console.log(`Response: ${result}`);
+      const updateDBFormData = new FormData();
+      updateDBFormData.append("title", this.form.title);
+      updateDBFormData.append("caption", this.form.caption);
+      updateDBFormData.append("s3_key", s3ObjectName);
+
+      const updateDBResponse = await this.axios({
+        method: "POST",
+        url: `${process.env.VUE_APP_BACKEND_HOST}/video/update-db/`,
+        data: updateDBFormData,
+      });
+
+      if (updateDBResponse.status === 201) {
+        this.showModal = true;
+      }
     },
   },
 };
