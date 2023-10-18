@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const s3ObjectName = v4();
+      const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
 
