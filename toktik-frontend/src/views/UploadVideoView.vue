@@ -30,7 +30,6 @@
             <b-form-input
               id="caption"
               v-model="form.caption"
-              required
               placeholder="Enter caption"
             ></b-form-input>
           </b-form-group>
@@ -55,6 +54,10 @@
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
       </b-card>
+
+      <b-modal v-model="showModal" title="Upload Successful">
+        <p>Your video has been uploaded successfully!</p>
+      </b-modal>
     </b-container>
   </div>
 </template>
@@ -69,6 +72,7 @@ export default {
         caption: "",
         file: null,
       },
+      showModal: false,
     };
   },
   methods: {
@@ -83,8 +87,9 @@ export default {
         data: presignedUrlFormData,
       });
 
-      const presignedUrl = await response.data.url;
-      const result = this.axios({
+      const presignedUrl = response.data.url;
+      // eslint-disable-next-line no-unused-vars
+      const result = await this.axios({
         method: "PUT",
         url: presignedUrl,
         data: this.form.file,
@@ -92,17 +97,6 @@ export default {
           "x-amz-acl": "public-read",
         },
       });
-
-      result.then(
-        // eslint-disable-next-line no-unused-vars
-        (response) => {
-          console.log("Success!");
-        },
-        (errorResponse) => {
-          console.error(errorResponse);
-          return;
-        }
-      );
 
       const updateDBFormData = new FormData();
       updateDBFormData.append("title", this.form.title);
@@ -115,7 +109,9 @@ export default {
         data: updateDBFormData,
       });
 
-      console.log(updateDBResponse);
+      if (updateDBResponse.status === 201) {
+        this.showModal = true;
+      }
     },
   },
 };
