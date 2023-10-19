@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const s3ObjectName = v4();
+      const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
 
@@ -97,6 +97,8 @@ export default {
         data: this.form.file,
         headers: {
           "x-amz-acl": "public-read",
+          "Content-Type": "video/*",
+          Authorization: "",
         },
       });
       console.log("successfully send a PUT request to the presigned url")
