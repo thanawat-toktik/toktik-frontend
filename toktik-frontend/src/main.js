@@ -4,6 +4,7 @@ import Vue from "vue";
 import "./plugins/bootstrap-vue";
 import App from "./App.vue";
 import axios from "axios";
+import { EventBus } from './eventBus.js';
 import VueAxios from "vue-axios";
 import router from './router'
 
@@ -16,6 +17,7 @@ new Vue({
   render: (h) => h(App),
 }).$mount("#app");
 
+// TOKEN
 const token = localStorage.getItem('jwt-token')
 if (token) {
   Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
@@ -25,13 +27,16 @@ if (refresh_token) {
   Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + refresh_token;
 }
 
+
+// ERROR INTERCEPT
 Vue.axios.interceptors.response.use(
   (response) => {
     return response
   }, 
   async (error) => {
-    console.log(error)
-    if (error.response.status === 401) {
+    const status = error.response.status ?? 0
+    if (status === 401) {
+      EventBus.$emit('show-modal', { title: 'Unauthorized', message: 'Please Log-in again'} );
       const token = localStorage.getItem('jwt-token')
       if (token) {
         localStorage.removeItem('jwt-token')
@@ -42,6 +47,8 @@ Vue.axios.interceptors.response.use(
       }
       router.push('/login')
     }
+
+    EventBus.$emit('show-modal', { title: 'Error occurred', message: error.message} );
     return Promise.reject(error)
   })
 

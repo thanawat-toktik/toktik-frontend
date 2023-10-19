@@ -6,12 +6,17 @@
     <b-form @submit.prevent="onLogout">
       <b-button type="submit" variant="primary">Logout</b-button>
     </b-form>
+    <b-form @submit.prevent="testButton">
+      <b-button type="submit" variant="primary">Test</b-button>
+    </b-form>
     
   </div>
 </template>
 
 <script>
 import router from '@/router';
+import { EventBus } from '@/eventBus';
+
 export default {
   data() {
     return {
@@ -38,6 +43,9 @@ export default {
         localStorage.removeItem('jwt-token-refresh')
       }
       await router.push({ name: "Log-In" });
+    },
+    async testButton() {
+      EventBus.$emit('show-modal', { title: 'Unauthorized', message: 'Please Log-in again'} );
     }
   }
 }

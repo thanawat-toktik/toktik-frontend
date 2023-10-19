@@ -9,8 +9,21 @@
       <router-link to="/upload">Upload Video</router-link>
     </nav>
     <router-view/>
+    
+    <GenericInfoModal></GenericInfoModal>
   </div>
 </template>
+
+<script>
+import GenericInfoModal from './components/GenericInfoModal.vue';
+
+export default {
+  name: 'App',
+  components: {
+    GenericInfoModal
+  },
+}
+</script>
 
 <style lang="scss">
 #app {
