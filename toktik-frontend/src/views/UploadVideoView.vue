@@ -95,6 +95,8 @@ export default {
         data: this.form.file,
         headers: {
           "x-amz-acl": "public-read",
+          "Content-Type": "video/*",
+          Authorization: "",
         },
       });
 
