@@ -83,7 +83,7 @@ export default {
 
       const response = await this.axios({
         method: "POST",
-        url: `${process.env.VUE_APP_BACKEND_HOST}/video/upload-psurl/`,
+        url: `/api/video/upload-psurl/`,
         data: presignedUrlFormData,
       });
 
@@ -107,7 +107,7 @@ export default {
 
       const updateDBResponse = await this.axios({
         method: "POST",
-        url: `${process.env.VUE_APP_BACKEND_HOST}/video/update-db/`,
+        url: `/api/video/update-db/`,
         data: updateDBFormData,
       });
 
