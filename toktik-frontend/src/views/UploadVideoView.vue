@@ -83,11 +83,13 @@ export default {
 
       const response = await this.axios({
         method: "POST",
-        url: `${process.env.VUE_APP_BACKEND_HOST}/video/upload-psurl/`,
+        url: `${process.env.VUE_APP_BACKEND_HOST}/api/video/upload-psurl/`,
         data: presignedUrlFormData,
       });
 
       const presignedUrl = response.data.url;
+      console.log("successfully retrieved presigned url from backend")
+
       // eslint-disable-next-line no-unused-vars
       const result = await this.axios({
         method: "PUT",
@@ -99,6 +101,7 @@ export default {
           Authorization: "",
         },
       });
+      console.log("successfully send a PUT request to the presigned url")
 
       const updateDBFormData = new FormData();
       updateDBFormData.append("title", this.form.title);
@@ -107,7 +110,7 @@ export default {
 
       const updateDBResponse = await this.axios({
         method: "POST",
-        url: `${process.env.VUE_APP_BACKEND_HOST}/video/update-db/`,
+        url: `${process.env.VUE_APP_BACKEND_HOST}/api/video/update-db/`,
         data: updateDBFormData,
       });
 
