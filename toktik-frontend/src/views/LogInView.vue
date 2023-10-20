@@ -64,7 +64,7 @@ export default {
 
         const response = await this.axios({
           method: "POST",
-          url: `${process.env.VUE_APP_BACKEND_HOST}/auth/jwt/create/`,
+          url: `${process.env.VUE_APP_BACKEND_HOST}/api/auth/jwt/create/`,
           data: formData,
           credentials: "include"
           // withCredentials: true

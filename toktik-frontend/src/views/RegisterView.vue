@@ -104,7 +104,7 @@ export default {
         
         const response = await this.axios({
           method: "POST",
-          url: `${process.env.VUE_APP_BACKEND_HOST}/auth/register/`,
+          url: `${process.env.VUE_APP_BACKEND_HOST}/api/auth/register/`,
           data: formData,
         });
 
