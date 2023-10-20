@@ -1,4 +1,4 @@
-FROM node:16 as build-stage
+FROM node:16-slim as build-stage
 WORKDIR /app
 
 COPY /package*.json ./
@@ -11,5 +11,4 @@ FROM nginx:stable-alpine-slim as production-stage
 RUN mkdir /app
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
-ENV VUE_APP_BACKEND_HOST=${VUE_APP_BACKEND_HOST}
 CMD ["nginx", "-g", "daemon off;"]
