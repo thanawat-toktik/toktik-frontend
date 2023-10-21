@@ -49,15 +49,16 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     // console.log(to)
-    if (to.name == "Log-In" || to.name == "home" || to.name == "Register") {
+    if (to.name === "Log-In" || to.name === "Register") {
         next()
     }
 
     const token = localStorage.getItem("jwt-token")
     const refresh_token = localStorage.getItem("jwt-token-refresh")
-    // if no token (both) --> redirect to login
-    if (!token && !refresh_token) {
-        return {name: "Log-In"}
+    // if no token (both) and not going to log-in/register --> redirect to log-in
+    if (!token && !refresh_token && to.name !== "Log-In" && to.name !== "Register") {
+        return router.push("/login").catch(() => {
+        })
     }
     next()
 })
