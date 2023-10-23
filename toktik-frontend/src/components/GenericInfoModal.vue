@@ -21,27 +21,27 @@ import { EventBus } from '@/eventBus';
 
 export default {
     data() {
-        return {
-            showModal: false,
-            modalHeader: '',
-            modalMessage: '',
-        };
+      return {
+        showModal: false,
+        modalHeader: '',
+        modalMessage: '',
+      };
     },
     methods: {
-        closeModal() {
-            this.showModal = false;
-        }
+      closeModal() {
+        this.showModal = false;
+      }
     },
     created() {
-		EventBus.$on('show-modal', data => {
-            this.showModal = true;
+      EventBus.$on('show-modal', data => {
+        this.showModal = true;
 
-            console.log(data.title);
-            console.log(data.message);
-            this.modalHeader = data.title;
-            this.modalMessage = data.message;
-        });
-	}
+        console.log(data.title);
+        console.log(data.message);
+        this.modalHeader = data.title;
+        this.modalMessage = data.message;
+      });
+    }
 };
 </script>
 

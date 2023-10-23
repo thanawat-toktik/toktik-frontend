@@ -8,14 +8,15 @@ import { EventBus } from './eventBus.js';
 import VueAxios from "vue-axios";
 import router from './router'
 
+import VideoPlayer from "./components/VideoPlayer.vue";
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // TODO: dangerous remove this if possible
+
 Vue.config.productionTip = false;
 
 Vue.use(VueAxios, axios);
 
-new Vue({
-  router,
-  render: (h) => h(App),
-}).$mount("#app");
+Vue.component('VideoPlayer', VideoPlayer);
 
 // TOKEN
 const token = localStorage.getItem('jwt-token')
@@ -26,6 +27,11 @@ const refresh_token = localStorage.getItem('jwt-token-refresh')
 if (refresh_token) {
   Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + refresh_token;
 }
+
+new Vue({
+  router,
+  render: (h) => h(App),
+}).$mount("#app");
 
 
 // ERROR INTERCEPT
