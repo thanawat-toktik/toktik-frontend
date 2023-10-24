@@ -49,7 +49,7 @@ export default {
                     credentials: "include"
                 });
 
-                const videoUrl = response.data.video_url;
+                const videoUrl = response.data.urls[0];
                 
                 this.initVideoPlayer(videoUrl);
                 this.videoLoaded = true;
