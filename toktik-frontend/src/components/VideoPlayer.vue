@@ -1,6 +1,6 @@
 <template>
     <div v-show="videoLoaded">
-        <h1>PP</h1>
+        <h2>Video Player</h2>
         <video 
             ref="s3VideoPlayer"
             id="video"
@@ -35,25 +35,22 @@ export default {
     },
     methods: {
         async getVideo() {
-            if (this.videoId === 0) {
-                console.log("VIDEO ID IS 0")
-            }
-            // filename = 'IMG_6376_2.m3u8'; // get filename as an input to the component
-
             // this part sends an api call to backend for chunked vid
-            // const formData = new FormData();
-            // formData.append("video_id", this.videoId);
-
-            // const response = await this.axios({
-            // method: "GET",
-            // url: `/api/video/get-chunked/`, // TODO: change this url
-            // data: formData,
-            // credentials: "include"
-            // });
-
-            // const videoUrl = response.data.video_url;
-            const videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
+            const payload = new FormData();
+            payload.append("video_ids", [this.videoId]);
+            payload.append("bucket", "chunked");
+            
+            // const videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
             try {
+                const response = await this.axios({
+                    method: "POST",
+                    url: `/api/video/get-url/`,
+                    data: payload,
+                    credentials: "include"
+                });
+
+                const videoUrl = response.data.video_url;
+                
                 this.initVideoPlayer(videoUrl);
                 this.videoLoaded = true;
                 // TODO: incr view to the video with this id
