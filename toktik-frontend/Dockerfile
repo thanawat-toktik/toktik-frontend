@@ -3,9 +3,9 @@ WORKDIR /app
 
 COPY /package*.json ./
 
-RUN yarn install
+RUN npm install
 COPY / ./
-RUN yarn build
+RUN npm run build
 
 FROM nginx:stable-alpine-slim as production-stage
 RUN mkdir /app
