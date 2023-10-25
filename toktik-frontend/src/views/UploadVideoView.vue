@@ -47,16 +47,29 @@
               required
               accept="video/*"
               placeholder="Choose a file or drop it here..."
+              @input="onInput"
             ></b-form-file>
           </b-form-group>
 
-          <!-- <b-button type="submit" variant="secondary">Check</b-button> -->
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
       </b-card>
 
-      <b-modal v-model="showModal" title="Upload Successful">
-        <p>Your video has been uploaded successfully!</p>
+      <b-modal
+        v-model="showModal"
+        title="Upload Status"
+        hide-footer
+        hide-header-close
+      >
+        <p>{{ modalMessage }}</p>
+        <b-button
+          @click="
+            showModal = false;
+            modalMessage = '';
+          "
+          block
+          >Close</b-button
+        >
       </b-modal>
     </b-container>
   </div>
@@ -64,6 +77,7 @@
 
 <script>
 import { v4 } from "uuid";
+
 export default {
   data() {
     return {
@@ -73,10 +87,29 @@ export default {
         file: null,
       },
       showModal: false,
+      modalMessage: "",
+      videoLength: NaN,
     };
   },
   methods: {
+    onInput() {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.onloadedmetadata = () => {
+        this.videoLength = video.duration;
+        URL.revokeObjectURL(video.src);
+      };
+      video.load();
+      video.src = URL.createObjectURL(this.form.file);
+    },
     async onSubmit() {
+      if (this.videoLength > 60) {
+        this.modalMessage =
+          "Your video file is too long. Keep it under 60 seconds.";
+        this.showModal = true;
+        return;
+      }
+
       const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
@@ -88,7 +121,6 @@ export default {
       });
 
       const presignedUrl = response.data.url;
-      console.log("successfully retrieved presigned url from backend");
 
       // eslint-disable-next-line no-unused-vars
       const result = await this.axios({
@@ -101,7 +133,6 @@ export default {
           Authorization: "",
         },
       });
-      console.log("successfully send a PUT request to the presigned url");
 
       const updateDBFormData = new FormData();
       updateDBFormData.append("title", this.form.title);
@@ -115,6 +146,10 @@ export default {
       });
 
       if (updateDBResponse.status === 201) {
+        this.modalMessage = "Upload successful!";
+        this.showModal = true;
+      } else {
+        this.modalMessage = "Upload failed. Please try again.";
         this.showModal = true;
       }
     },
