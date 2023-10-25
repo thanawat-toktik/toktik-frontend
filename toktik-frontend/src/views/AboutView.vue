@@ -9,47 +9,43 @@
     </b-form>
 
     <VideoPlayer></VideoPlayer>
-    
   </div>
 </template>
 
 <script>
-import router from '@/router';
-import VideoPlayer from '@/components/VideoPlayer.vue';
+import router from "@/router";
+import VideoPlayer from "@/components/VideoPlayer.vue";
 
 export default {
   data() {
     return {
       components: {
-        VideoPlayer
+        VideoPlayer,
       },
-      
     };
   },
   setup() {
-    const token = localStorage.getItem("jwt-token")
-    console.log(token)
+    const token = localStorage.getItem("jwt-token");
+    console.log(token);
     if (token) {
-      return { token: token }
+      return { token: token };
     }
-    return { token: 'No Token (impossible, something is wrong)' }
+    return { token: "No Token (impossible, something is wrong)" };
   },
   methods: {
     // code for logout
     async onLogout() {
-      const token = localStorage.getItem( 'jwt-token' );
-      const token_refresh = localStorage.getItem( 'jwt-token-refresh' );
+      const token = localStorage.getItem("jwt-token");
+      const token_refresh = localStorage.getItem("jwt-token-refresh");
       if (token) {
-        localStorage.removeItem('jwt-token')
-        this.axios.defaults.headers.common['Authorization'] = 'Bearer ';
+        localStorage.removeItem("jwt-token");
+        this.axios.defaults.headers.common["Authorization"] = "Bearer ";
       }
       if (token_refresh) {
-        localStorage.removeItem('jwt-token-refresh')
+        localStorage.removeItem("jwt-token-refresh");
       }
       await router.push({ name: "Log-In" });
     },
-  }
-}
-
-
+  },
+};
 </script>

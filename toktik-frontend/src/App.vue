@@ -1,22 +1,22 @@
 <template>
   <div id="app">
     <NavBar></NavBar>
-    <router-view/>
+    <router-view />
     <GenericInfoModal></GenericInfoModal>
   </div>
 </template>
 
 <script>
-import GenericInfoModal from './components/GenericInfoModal.vue';
-import NavBar from './components/NavBar.vue';
+import GenericInfoModal from "./components/GenericInfoModal.vue";
+import NavBar from "./components/NavBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     GenericInfoModal,
     NavBar,
   },
-}
+};
 </script>
 
 <style lang="scss">
