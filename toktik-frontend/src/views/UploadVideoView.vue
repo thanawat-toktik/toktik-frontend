@@ -61,6 +61,13 @@
         hide-footer
         hide-header-close
       >
+        <b-progress
+          v-if="this.showProgress"
+          :value="this.uploadProgress"
+          :max="this.form.file.size"
+          show-progress
+          animated
+        ></b-progress>
         <p>{{ modalMessage }}</p>
         <b-button
           @click="
@@ -68,8 +75,8 @@
             modalMessage = '';
           "
           block
-          >Close</b-button
-        >
+          >Close
+        </b-button>
       </b-modal>
     </b-container>
   </div>
@@ -87,8 +94,10 @@ export default {
         file: null,
       },
       showModal: false,
+      showProgress: false,
       modalMessage: "",
       videoLength: NaN,
+      uploadProgress: 0,
     };
   },
   methods: {
@@ -121,18 +130,21 @@ export default {
       });
 
       const presignedUrl = response.data.url;
-
-      // eslint-disable-next-line no-unused-vars
-      const result = await this.axios({
-        method: "PUT",
-        url: presignedUrl,
-        data: this.form.file,
+      this.showModal = true;
+      const config = {
+        onUploadProgress: (progressEvent) => {
+          this.uploadProgress = progressEvent.loaded;
+        },
         headers: {
           "x-amz-acl": "public-read",
           "Content-Type": "video/*",
           Authorization: "",
         },
-      });
+      };
+
+      this.showProgress = true;
+      await this.axios.put(presignedUrl, this.form.file, config);
+      this.showProgress = false;
 
       const updateDBFormData = new FormData();
       updateDBFormData.append("title", this.form.title);
@@ -146,11 +158,9 @@ export default {
       });
 
       if (updateDBResponse.status === 201) {
-        this.modalMessage = "Upload successful!";
-        this.showModal = true;
+        this.modalMessage = "Upload successful.";
       } else {
         this.modalMessage = "Upload failed. Please try again.";
-        this.showModal = true;
       }
     },
   },
