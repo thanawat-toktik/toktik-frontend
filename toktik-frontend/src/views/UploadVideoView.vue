@@ -63,7 +63,9 @@
 </template>
 
 <script>
+import axios from '@/axios';
 import { v4 } from "uuid";
+
 export default {
   data() {
     return {
@@ -80,8 +82,8 @@ export default {
       const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
-
-      const response = await this.axios({
+      
+      const response = await axios({
         method: "POST",
         url: `/api/video/upload-psurl/`,
         data: presignedUrlFormData,
@@ -91,7 +93,7 @@ export default {
       console.log("successfully retrieved presigned url from backend")
 
       // eslint-disable-next-line no-unused-vars
-      const result = await this.axios({
+      const result = await axios({
         method: "PUT",
         url: presignedUrl,
         data: this.form.file,
@@ -108,7 +110,7 @@ export default {
       updateDBFormData.append("caption", this.form.caption);
       updateDBFormData.append("s3_key", s3ObjectName);
 
-      const updateDBResponse = await this.axios({
+      const updateDBResponse = await axios({
         method: "POST",
         url: `/api/video/update-db/`,
         data: updateDBFormData,

@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import axios from '@/axios';
+
 export default {
   data() {
     return {
@@ -62,7 +64,7 @@ export default {
         formData.append("email", this.email);
         formData.append("password", this.password);
 
-        const response = await this.axios({
+        const response = await axios({
           method: "POST",
           url: `/api/auth/jwt/create/`,
           data: formData,
@@ -73,9 +75,10 @@ export default {
         console.log(`Response: ${JSON.stringify(response.data)}`);
 
         // after login, include jwt token to every header
-        this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
+        
         localStorage.setItem( 'jwt-token', response.data.access );
         localStorage.setItem( 'jwt-token-refresh', response.data.refresh );
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
 
       } catch (error) {
         this.error = 'An error occurred during login. Please try again.';

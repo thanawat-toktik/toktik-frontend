@@ -20,6 +20,7 @@
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import 'videojs-contrib-hls';
+import axios from '@/axios';
 
 export default {
     name:"video-player",
@@ -31,6 +32,7 @@ export default {
         };
     },
     mounted() {
+        this.videoLoaded = false;
         this.getVideo()
     },
     methods: {
@@ -40,18 +42,23 @@ export default {
             payload.append("video_ids", [this.videoId]);
             payload.append("bucket", "chunked");
             
-            // const videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
             try {
-                const response = await this.axios({
+                const response = await axios({
                     method: "POST",
                     url: `/api/video/get-url/`,
                     data: payload,
                     credentials: "include"
                 });
+                let videoUrl;
+                if (!response.data) {
+                    videoUrl = response.data.urls[0];
+                } else { // todo: remove this after 
+                    videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
+                }
 
-                const videoUrl = response.data.urls[0];
-                
-                this.initVideoPlayer(videoUrl);
+                if (!this.player) {
+                    this.initVideoPlayer(videoUrl);
+                }
                 this.videoLoaded = true;
                 // TODO: incr view to the video with this id
             } catch (error) {
