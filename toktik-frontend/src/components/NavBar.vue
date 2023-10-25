@@ -1,8 +1,16 @@
 <template>
   <b-navbar toggleable="sm">
     <b-navbar-brand href="#">
-      <img src="../assets/logo-icon-small.png" alt="Toktik Logo" style="height: 35px">
-      <img src="../assets/logo-text.png" alt="Toktik text" style="height: 35px">
+      <img
+        src="../assets/logo-icon-small.png"
+        alt="Toktik Logo"
+        style="height: 35px"
+      />
+      <img
+        src="../assets/logo-text.png"
+        alt="Toktik text"
+        style="height: 35px"
+      />
     </b-navbar-brand>
 
     <b-collapse id="nav-text-collapse" is-nav>
@@ -30,6 +38,6 @@
 
 <script>
 export default {
-  name: 'NavBar',
-}
+  name: "NavBar",
+};
 </script>

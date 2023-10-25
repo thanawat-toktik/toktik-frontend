@@ -11,17 +11,17 @@
             label-align="right"
             style="text-align: left"
           >
-          <b-form-input
+            <b-form-input
               id="email"
               v-model="email"
               required
               placeholder="Sample: helloworld@toktik.com"
               type="email"
             ></b-form-input>
-        </b-form-group>
+          </b-form-group>
 
-        <!-- Password -->
-        <b-form-group
+          <!-- Password -->
+          <b-form-group
             label="Password"
             label-for="password"
             label-cols="1"
@@ -36,13 +36,12 @@
               placeholder="Type in your password"
             ></b-form-input>
           </b-form-group>
-
+          <p v-if="error" style="color: red">{{ error }}</p>
+          <p v-if="success" style="color: green">{{ success }}</p>
           <b-button type="submit" variant="primary">Submit</b-button>
-
         </b-form>
-        <p v-if="error" style="color: red;">{{ error }}</p>
       </b-card>
-    </b-container>    
+    </b-container>
   </div>
 </template>
 
@@ -54,7 +53,8 @@ export default {
     return {
       email: "",
       password: "",
-      error: ""
+      error: "",
+      success: "",
     };
   },
   methods: {
@@ -68,23 +68,23 @@ export default {
           method: "POST",
           url: `/api/auth/jwt/create/`,
           data: formData,
-          credentials: "include"
+          credentials: "include",
           // withCredentials: true
         });
 
         console.log(`Response: ${JSON.stringify(response.data)}`);
 
-        // after login, include jwt token to every header
-        
-        localStorage.setItem( 'jwt-token', response.data.access );
-        localStorage.setItem( 'jwt-token-refresh', response.data.refresh );
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
-
+        // after login, include jwt token to every header        
+        localStorage.setItem("jwt-token", response.data.access);
+        localStorage.setItem("jwt-token-refresh", response.data.refresh);
+        this.axios.defaults.headers.common["Authorization"] =
+          "Bearer " + response.data.access;
+        this.success = "Login successful!";
       } catch (error) {
-        this.error = 'An error occurred during login. Please try again.';
-        console.error('Error:', error);
+        this.error = "An error occurred during login. Please try again.";
+        console.error("Error:", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
