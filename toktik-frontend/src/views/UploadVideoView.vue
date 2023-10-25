@@ -88,7 +88,7 @@ export default {
       });
 
       const presignedUrl = response.data.url;
-      console.log("successfully retrieved presigned url from backend")
+      console.log("successfully retrieved presigned url from backend");
 
       // eslint-disable-next-line no-unused-vars
       const result = await this.axios({
@@ -101,7 +101,7 @@ export default {
           Authorization: "",
         },
       });
-      console.log("successfully send a PUT request to the presigned url")
+      console.log("successfully send a PUT request to the presigned url");
 
       const updateDBFormData = new FormData();
       updateDBFormData.append("title", this.form.title);

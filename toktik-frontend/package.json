@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prettier": "prettier --write '**/*.{ts,js,css,html,vue}'"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.428.0",
