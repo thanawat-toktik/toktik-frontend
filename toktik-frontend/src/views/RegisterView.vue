@@ -81,6 +81,7 @@
 
 <script>
 import router from "@/router";
+import axios from "@/axios";
 
 export default {
   data() {
@@ -100,8 +101,8 @@ export default {
         formData.append("display_name", this.displayname);
         formData.append("email", this.email);
         formData.append("password", this.password);
-
-        const response = await this.axios({
+        
+        const response = await axios({
           method: "POST",
           url: `/api/auth/register/`,
           data: formData,

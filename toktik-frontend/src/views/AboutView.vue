@@ -14,6 +14,7 @@
 
 <script>
 import router from "@/router";
+import axios from "@/axios";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 
 export default {
@@ -25,8 +26,7 @@ export default {
     };
   },
   setup() {
-    const token = localStorage.getItem("jwt-token");
-    console.log(token);
+    const token = localStorage.getItem("jwt-token")
     if (token) {
       return { token: token };
     }
@@ -38,8 +38,8 @@ export default {
       const token = localStorage.getItem("jwt-token");
       const token_refresh = localStorage.getItem("jwt-token-refresh");
       if (token) {
-        localStorage.removeItem("jwt-token");
-        this.axios.defaults.headers.common["Authorization"] = "Bearer ";
+        localStorage.removeItem('jwt-token')
+        axios.defaults.headers.common['Authorization'] = '';
       }
       if (token_refresh) {
         localStorage.removeItem("jwt-token-refresh");

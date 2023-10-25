@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import axios from '@/axios';
 import { v4 } from "uuid";
 
 export default {
@@ -122,8 +123,8 @@ export default {
       const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
-
-      const response = await this.axios({
+      
+      const response = await axios({
         method: "POST",
         url: `/api/video/upload-psurl/`,
         data: presignedUrlFormData,
@@ -143,7 +144,7 @@ export default {
       };
 
       this.showProgress = true;
-      await this.axios.put(presignedUrl, this.form.file, config);
+      await axios.put(presignedUrl, this.form.file, config);
       this.showProgress = false;
 
       const updateDBFormData = new FormData();
@@ -151,7 +152,7 @@ export default {
       updateDBFormData.append("caption", this.form.caption);
       updateDBFormData.append("s3_key", s3ObjectName);
 
-      const updateDBResponse = await this.axios({
+      const updateDBResponse = await axios({
         method: "POST",
         url: `/api/video/update-db/`,
         data: updateDBFormData,
