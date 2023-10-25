@@ -36,10 +36,10 @@
               placeholder="Type in your password"
             ></b-form-input>
           </b-form-group>
-
+          <p v-if="error" style="color: red">{{ error }}</p>
+          <p v-if="success" style="color: green">{{ success }}</p>
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
-        <p v-if="error" style="color: red">{{ error }}</p>
       </b-card>
     </b-container>
   </div>
@@ -52,6 +52,7 @@ export default {
       email: "",
       password: "",
       error: "",
+      success: "",
     };
   },
   methods: {
@@ -76,6 +77,7 @@ export default {
           "Bearer " + response.data.access;
         localStorage.setItem("jwt-token", response.data.access);
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
+        this.success = "Login successful!";
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
         console.error("Error:", error);

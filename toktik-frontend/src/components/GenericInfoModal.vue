@@ -10,7 +10,7 @@
       </section>
 
       <footer class="modal-footer">
-        <button @click="closeModal">Close</button>
+        <b-button @click="closeModal">Close</b-button>
       </footer>
     </div>
   </div>
