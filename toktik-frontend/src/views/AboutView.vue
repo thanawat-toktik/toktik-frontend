@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import router from "@/router";
-import axios from "@/axios";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 
 export default {
@@ -33,19 +31,7 @@ export default {
     return { token: "No Token (impossible, something is wrong)" };
   },
   methods: {
-    // code for logout
-    async onLogout() {
-      const token = localStorage.getItem("jwt-token");
-      const token_refresh = localStorage.getItem("jwt-token-refresh");
-      if (token) {
-        localStorage.removeItem('jwt-token')
-        axios.defaults.headers.common['Authorization'] = '';
-      }
-      if (token_refresh) {
-        localStorage.removeItem("jwt-token-refresh");
-      }
-      await router.push({ name: "Log-In" });
-    },
+    
   },
 };
 </script>

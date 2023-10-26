@@ -46,7 +46,9 @@
 </template>
 
 <script>
+import router from "@/router";
 import axios from '@/axios';
+// import { EventBus } from '@/eventBus';
 
 export default {
   data() {
@@ -79,7 +81,11 @@ export default {
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
         this.axios.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
-        this.success = "Login successful!";
+        
+        // should we turn this into a modal?
+        // this.success = "Login successful!";
+        
+        await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
         console.error("Error:", error);

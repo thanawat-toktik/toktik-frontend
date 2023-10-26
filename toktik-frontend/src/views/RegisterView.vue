@@ -117,7 +117,7 @@ export default {
 
         // Registered success
         // redirect to log in page
-        await router.push({ name: "Log-In" });
+        await router.push({ name: "login" });
       } catch (error) {
         this.error = "An error occurred during registration. Please try again.";
         console.error("Error:", error);
