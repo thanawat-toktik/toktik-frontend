@@ -37,7 +37,6 @@
             ></b-form-input>
           </b-form-group>
           <p v-if="error" style="color: red">{{ error }}</p>
-          <p v-if="success" style="color: green">{{ success }}</p>
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
       </b-card>
@@ -56,7 +55,6 @@ export default {
       email: "",
       password: "",
       error: "",
-      success: "",
     };
   },
   methods: {
@@ -82,8 +80,6 @@ export default {
         this.axios.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
         
-        // should we turn this into a modal?
-        // this.success = "Login successful!";
         
         await router.push({ name: "feed" });
       } catch (error) {
