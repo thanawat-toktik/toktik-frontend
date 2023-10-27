@@ -37,7 +37,6 @@
             ></b-form-input>
           </b-form-group>
           <p v-if="error" style="color: red">{{ error }}</p>
-          <p v-if="success" style="color: green">{{ success }}</p>
           <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
       </b-card>
@@ -46,7 +45,9 @@
 </template>
 
 <script>
+import router from "@/router";
 import axios from '@/axios';
+// import { EventBus } from '@/eventBus';
 
 export default {
   data() {
@@ -54,7 +55,6 @@ export default {
       email: "",
       password: "",
       error: "",
-      success: "",
     };
   },
   methods: {
@@ -79,7 +79,9 @@ export default {
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
         this.axios.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
-        this.success = "Login successful!";
+        
+        
+        await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
         console.error("Error:", error);

@@ -110,14 +110,7 @@ export default {
 
         console.log(`Response: ${JSON.stringify(response.data)}`);
 
-        // if (!response.data) {
-        //   console.log(response)
-        //   throw new Error('Did not receive expected data');
-        // }
-
-        // Registered success
-        // redirect to log in page
-        await router.push({ name: "Log-In" });
+        await router.push({ name: "login" });
       } catch (error) {
         this.error = "An error occurred during registration. Please try again.";
         console.error("Error:", error);

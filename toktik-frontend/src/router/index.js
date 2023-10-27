@@ -1,10 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import AboutView from "@/views/AboutView.vue";
+import VideoFeedView from "../views/VideoFeedView.vue";
+import AboutView from "../views/AboutView.vue";
 import LogInView from "../views/LogInView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import UploadVideoView from "../views/UploadVideoView.vue";
+import { EventBus } from "@/eventBus";
 
 Vue.use(VueRouter);
 
@@ -16,6 +18,12 @@ const routes = [
     meta: { title: "Home - TokTik" },
   },
   {
+    path: "/feed",
+    name: "feed",
+    component: VideoFeedView,
+    meta: { title: "Feed - TokTik" },
+  },
+  {
     path: "/about",
     name: "about",
     component: AboutView,
@@ -23,19 +31,19 @@ const routes = [
   },
   {
     path: "/login",
-    name: "Log-In",
+    name: "login",
     component: LogInView,
     meta: { title: "Login - TokTik" },
   },
   {
     path: "/register",
-    name: "Register",
+    name: "register",
     component: RegisterView,
     meta: { title: "Register - TokTik" },
   },
   {
     path: "/upload",
-    name: "Upload Video",
+    name: "upload-video",
     component: UploadVideoView,
     meta: { title: "Upload Video - TokTik" },
   },
@@ -49,7 +57,8 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   // console.log(to)
-  if (to.name === "Log-In" || to.name === "Register") {
+  if (to.name === "login" || to.name === "register") {
+    EventBus.$emit('token-update');
     next();
   }
 
@@ -59,11 +68,12 @@ router.beforeEach(async (to, from, next) => {
   if (
     !token &&
     !refresh_token &&
-    to.name !== "Log-In" &&
-    to.name !== "Register"
+    to.name !== "login" &&
+    to.name !== "register"
   ) {
     return router.push("/login").catch(() => {});
   }
+  EventBus.$emit('token-update');
   next();
 });
 

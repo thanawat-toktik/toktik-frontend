@@ -83,7 +83,7 @@ instance.interceptors.response.use(
   //         console.log(error)
   //         // forces user to get a new token
   //         localStorage.removeItem('jwt-token-refresh')
-  //         await router.push({ name: "Log-In" });
+  //         await router.push({ name: "login" });
   //       }      
   //     }
   //     return Promise.reject(error)
