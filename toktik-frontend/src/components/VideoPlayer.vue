@@ -1,17 +1,15 @@
 <template>
-  <div v-show="videoLoaded">
+  <div v-show="videoLoaded" class="video-container">
     <h2>Video Player</h2>
     <video
         ref="s3VideoPlayer"
         id="video"
-        class="video-js vjs-default-skin"
+        class="video-js vjs-default-skin vjs-16-9"
         preload="auto"
         crossorigin="use-credentials"
         controls
-        width="640"
-        height="268"
         data-setup='{ "fluid": true }'
-        autoplay="true"
+        autoplay="autoplay"
     ></video>
   </div>
 </template>
@@ -24,14 +22,18 @@ import axios from '@/axios';
 
 export default {
   name: "video-player",
+  props: {
+    video: Number,
+  },
   data() {
     return {
       player: null,
       videoLoaded: false,
-      videoId: 25,
+      videoId: -1,
     };
   },
   mounted() {
+    this.videoId = this.video;
     this.videoLoaded = false;
     this.getVideo();
   },
@@ -48,7 +50,7 @@ export default {
       try {
         const response = await axios({
           method: "GET",
-          url: `/api/video/get-url/`,
+          url: `/api/video/get-playlist/`,
           params: {
             video_id: this.videoId,
           },
