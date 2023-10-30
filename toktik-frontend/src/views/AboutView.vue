@@ -4,7 +4,7 @@
     <h1>This is an about page</h1>
     <h1>Basically a testing page</h1>
 
-    <VideoPlayer></VideoPlayer>
+    <VideoPlayer video="25"></VideoPlayer>
   </div>
 </template>
 
@@ -18,12 +18,6 @@ export default {
         VideoPlayer,
       },
     };
-  },
-  setup() {
-    
-  },
-  methods: {
-    
   },
 };
 </script>
