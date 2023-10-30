@@ -1,17 +1,15 @@
 <template>
-  <div v-show="videoLoaded">
+  <div v-show="videoLoaded" class="video-container">
     <h2>Video Player</h2>
     <video
-      ref="s3VideoPlayer"
-      id="video"
-      class="video-js vjs-default-skin"
-      preload="auto"
-      crossorigin="use-credentials"
-      controls
-      width="640"
-      height="268"
-      data-setup='{ "fluid": true }'
-      autoplay="true"
+        ref="s3VideoPlayer"
+        id="video"
+        class="video-js vjs-default-skin vjs-16-9"
+        preload="auto"
+        crossorigin="use-credentials"
+        controls
+        data-setup='{ "fluid": true }'
+        autoplay="autoplay"
     ></video>
   </div>
 </template>
@@ -24,40 +22,44 @@ import axios from '@/axios';
 
 export default {
   name: "video-player",
+  props: {
+    video: Number,
+  },
   data() {
     return {
       player: null,
       videoLoaded: false,
-      videoId: 2,
+      videoId: -1,
     };
   },
   mounted() {
+    this.videoId = this.video;
     this.videoLoaded = false;
     this.getVideo();
   },
+  beforeDestroy() {
+    if (this.player.src()) {
+      URL.revokeObjectURL(this.player.src());
+    }
+    if (this.player) {
+      this.player.dispose();
+    }
+  },
   methods: {
     async getVideo() {
-      // this part sends an api call to backend for chunked vid
-      const payload = new FormData();
-      payload.append("video_ids", [this.videoId]);
-      payload.append("bucket", "chunked");
-
-      // const videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
       try {
         const response = await axios({
-          method: "POST",
-          url: `/api/video/get-url/`,
-          data: payload,
+          method: "GET",
+          url: `/api/video/get-playlist/`,
+          params: {
+            video_id: this.videoId,
+          },
           credentials: "include",
         });
-        let videoUrl;
-        if (!response.data) {
-          videoUrl = response.data.urls[0];
-        } else { // todo: remove this after 
-          videoUrl = "https://chonky.toktik.thanawat.sgp1.cdn.digitaloceanspaces.com/IMG_6376_2/IMG_6376_2.m3u8"
-        }
+        const playlistBlob = new Blob([response.data], {type: "text/plain"});
+        const playlistURL = URL.createObjectURL(playlistBlob);
         if (!this.player) {
-          this.initVideoPlayer(videoUrl);
+          this.initVideoPlayer(playlistURL);
         }
         this.videoLoaded = true;
         // TODO: incr view to the video with this id
