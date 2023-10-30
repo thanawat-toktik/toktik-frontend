@@ -47,7 +47,6 @@
 <script>
 import router from "@/router";
 import axios from '@/axios';
-// import { EventBus } from '@/eventBus';
 
 export default {
   data() {

@@ -33,7 +33,6 @@ export default {
       video_ids: [],
       video_thumbnails: [],
       current_video_index: 0,
-      placeholder_thumbnail: '../assets/logo.png',
     };
   },
   mounted() {
@@ -60,17 +59,17 @@ export default {
     },
 
     async fetchThumbnails() {
-      // const formData = new FormData();
-      // formData.append("video_ids", this.video_ids);
-      // formData.append("bucket", 'thumbnail');
+      const formData = new FormData();
+      formData.append("video_ids", this.video_ids);
+      formData.append("bucket", 'thumbnail');
       
-      // const response = await axios({
-      //   method: "POST",
-      //   url: `/api/video/get-url/`,
-      //   data: formData
-      // });
-      // this.video_thumbnails = response.data.urls;
-      this.video_thumbnails = this.fakeThumbnail().urls;
+      const response = await axios({
+        method: "POST",
+        url: `/api/video/get-url/`,
+        data: formData
+      });
+      this.video_thumbnails = response.data.urls;
+      // this.video_thumbnails = this.fakeThumbnail().urls;
     },
 
     fakeThumbnail() {
