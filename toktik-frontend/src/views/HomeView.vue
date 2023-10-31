@@ -28,6 +28,12 @@
               </div>
               <div class=".video-process">
                 <p>{{ progressText(video) }}</p>
+                <button 
+                  v-if="video.isChunked"
+                  @click="viewVideo(video.id)"
+                  >
+                  View Video
+                </button>
               </div>
           </li>
         </ul>
@@ -39,6 +45,7 @@
 
 <script>
 import axios from '@/axios';
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -94,7 +101,6 @@ export default {
         console.error("Error:", error);
       }
     },
-
     async fetchThumbnails() {
       const formData = new FormData();
       formData.append("video_ids", this.video_ids);
@@ -107,6 +113,9 @@ export default {
       });
       this.video_thumbnails = response.data.urls;
     },
+    viewVideo(videoId) {
+      EventBus.$emit("play-video-once", videoId);
+    }
     
   },
 };

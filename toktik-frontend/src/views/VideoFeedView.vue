@@ -10,6 +10,7 @@
           <img
               :src="video_thumbnails[index]"
               alt="Thumbnail"
+              @click="viewVideo(video.id, index)"
           />
         </div>
         <div class="video_block__text">
@@ -25,6 +26,7 @@
 
 <script>
 import axios from '@/axios';
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -38,7 +40,37 @@ export default {
   mounted() {
     this.fetchVideos();
   },
+  created() {
+    EventBus.$on("play-next-video", () => {
+      // when it goes over the array
+      if (this.current_video_index + 1 >= this.videos.length) {
+        
+        EventBus.$emit("stop-video");
+      } else {
+        ++this.current_video_index;
+        const videoId = this.video_ids[ this.current_video_index ]
+        EventBus.$emit("play-video", videoId);
+      }
+    });
+
+    EventBus.$on("play-prev-video", () => {
+      // when it goes over the array
+      if (this.current_video_index === 0) {
+        EventBus.$emit("stop-video");
+      } else {
+        --this.current_video_index;
+        const videoId = this.video_ids[ this.current_video_index ]
+        EventBus.$emit("play-video", videoId);
+      }
+    });
+  },
+
   methods: {
+    viewVideo(videoId, index) {
+      EventBus.$emit("play-video", videoId);
+      this.current_video_index = index;
+    },
+
     async fetchVideos() {
       try {
         const response = await axios({
@@ -104,6 +136,7 @@ export default {
   width: 250px;
   object-fit: cover;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .video_block__text {

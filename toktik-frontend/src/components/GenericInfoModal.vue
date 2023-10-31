@@ -56,6 +56,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 12000;
 }
 
 .modal-content {
@@ -65,7 +66,7 @@ export default {
   border: 1px solid #888;
   width: 80%;
   opacity: 1;
-  z-index: 1000;
+  z-index: 12001;
 }
 
 .modal-header,

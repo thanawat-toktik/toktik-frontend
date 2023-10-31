@@ -15,6 +15,7 @@ instance.interceptors.response.use(
       return response
     }, 
     async (error) => {
+      EventBus.$emit('stop-video'); // done in attempt to stop any active video
       const status = error.response.status ?? 0
       if (status === 401) {
         EventBus.$emit('show-modal', { title: 'Unauthorized', message: 'Please Log-in again'} );

@@ -2,12 +2,14 @@
   <div id="app">
     <NavBar></NavBar>
     <router-view />
+    <VideoPopUp></VideoPopUp>
     <GenericInfoModal></GenericInfoModal>
   </div>
 </template>
 
 <script>
 import GenericInfoModal from "./components/GenericInfoModal.vue";
+import VideoPopUp from "./components/VideoPopUp.vue";
 import NavBar from "./components/NavBar.vue";
 
 export default {
@@ -15,6 +17,7 @@ export default {
   components: {
     GenericInfoModal,
     NavBar,
+    VideoPopUp,
   },
 };
 </script>

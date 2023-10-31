@@ -1,6 +1,5 @@
 <template>
   <div v-show="videoLoaded" class="video-container">
-    <h2>Video Player</h2>
     <video
         ref="s3VideoPlayer"
         id="video"
@@ -19,11 +18,13 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-contrib-hls";
 import axios from '@/axios';
+import { EventBus } from "@/eventBus";
 
 export default {
   name: "video-player",
   props: {
     video: Number,
+    playOnce: Boolean,
   },
   data() {
     return {
@@ -62,7 +63,6 @@ export default {
           this.initVideoPlayer(playlistURL);
         }
         this.videoLoaded = true;
-        // TODO: incr view to the video with this id
       } catch (error) {
         console.error("Error downloading file:", error);
       }
@@ -90,7 +90,28 @@ export default {
       this.player.on("error", (error) => {
         console.error("VIDEOJS: ERROR:", error);
       });
+      this.player.on("ended", () => {
+        if ( !this.playOnce ) {
+          this.increaseView();
+          EventBus.$emit("play-next-video")
+        }
+        // if you want the player to go away after ending (for play once)
+        // do this --> EventBus.$emit("stop-video")
+      })
     },
+
+    async increaseView() {
+      try {
+        await axios({
+          method: "GET",
+          url: `/api/video/${this.videoId}/view/`,
+          credentials: "include",
+        });
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+      
+    }
   },
 };
 </script>
