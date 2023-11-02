@@ -10,6 +10,7 @@
           <img
               :src="video_thumbnails[index]"
               alt="Thumbnail"
+              @click="viewVideo(video.id, index)"
           />
         </div>
         <div class="video_block__text">
@@ -25,6 +26,7 @@
 
 <script>
 import axios from '@/axios';
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -33,13 +35,41 @@ export default {
       video_ids: [],
       video_thumbnails: [],
       current_video_index: 0,
-      placeholder_thumbnail: '../assets/logo.png',
     };
   },
   mounted() {
     this.fetchVideos();
   },
+  created() {
+    EventBus.$on("play-next-video", () => {
+      // when it goes over the array
+      if (this.current_video_index + 1 >= this.videos.length) {
+        EventBus.$emit("stop-video");
+      } else {
+        ++this.current_video_index;
+        const videoId = this.video_ids[ this.current_video_index ]
+        EventBus.$emit("play-video", videoId);
+      }
+    });
+
+    EventBus.$on("play-prev-video", () => {
+      // when it goes over the array
+      if (this.current_video_index === 0) {
+        EventBus.$emit("stop-video");
+      } else {
+        --this.current_video_index;
+        const videoId = this.video_ids[ this.current_video_index ]
+        EventBus.$emit("play-video", videoId);
+      }
+    });
+  },
+
   methods: {
+    viewVideo(videoId, index) {
+      EventBus.$emit("play-video", videoId);
+      this.current_video_index = index;
+    },
+
     async fetchVideos() {
       try {
         const response = await axios({
@@ -63,41 +93,13 @@ export default {
       const formData = new FormData();
       formData.append("video_ids", this.video_ids);
       formData.append("bucket", 'thumbnail');
-
       const response = await axios({
         method: "POST",
         url: `/api/video/get-url/`,
         data: formData
       });
       this.video_thumbnails = response.data.urls;
-      // this.video_thumbnails = this.fakeThumbnail().urls;
     },
-
-    // fakeThumbnail() {
-    //   return {
-    //     "video_ids": [2, 4, 8],
-    //     "urls": [
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/pokemon-scarlet-violet/d/d5/Pokemon_SV_Screenshot_13.jpg",
-    //       "https://images.ctfassets.net/pkeegl0voupm/2wWMLt9oNBJ6XF1aekULGn/129dd3cebfefb8132231665bff2b0e99/news_pokemonsv_bnr.jpg",
-    //       "https://scarletviolet.pokemon.com/_images/news/feb_27/teal_mask_art.jpg",
-    //     ]
-    //   }
-    // }
   },
 };
 </script>
@@ -133,6 +135,7 @@ export default {
   width: 250px;
   object-fit: cover;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .video_block__text {

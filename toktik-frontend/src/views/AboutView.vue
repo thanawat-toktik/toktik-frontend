@@ -4,12 +4,13 @@
     <h1>This is an about page</h1>
     <h1>Basically a testing page</h1>
 
-    <VideoPlayer video="25"></VideoPlayer>
+    <button @click="playVideo">PLAY VIDEO</button>
   </div>
 </template>
 
 <script>
 import VideoPlayer from "@/components/VideoPlayer.vue";
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -19,5 +20,10 @@ export default {
       },
     };
   },
+  methods: {
+    playVideo() {
+      EventBus.$emit("play-video-once", 20);
+    }
+  }
 };
 </script>
