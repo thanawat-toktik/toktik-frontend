@@ -45,43 +45,45 @@
 <script>
 import router from "@/router";
 import axios from "@/axios";
-import { EventBus } from '@/eventBus';
+import { EventBus } from "@/eventBus";
 
 export default {
   name: "NavBar",
-  data () {
+  data() {
     return {
-      isLoggedIn: false
-    }
+      isLoggedIn: false,
+    };
   },
   created() {
-    this.checkToken()
+    this.checkToken();
     EventBus.$on("token-update", () => {
-      this.checkToken()
+      this.checkToken();
     });
   },
   methods: {
     async checkToken() {
-      const token = localStorage.getItem("jwt-token")
-      const refresh = localStorage.getItem("jwt-token-refresh")
+      const token = localStorage.getItem("jwt-token");
+      const refresh = localStorage.getItem("jwt-token-refresh");
       // if token and refresh is present, user is logged in
-      this.isLoggedIn = token && refresh
+      this.isLoggedIn = token && refresh;
     },
 
     async onLogout() {
       const token = localStorage.getItem("jwt-token");
       const token_refresh = localStorage.getItem("jwt-token-refresh");
       if (token) {
-        localStorage.removeItem('jwt-token')
-        axios.defaults.headers.common['Authorization'] = '';
+        localStorage.removeItem("jwt-token");
+        axios.defaults.headers.common["Authorization"] = "";
       }
       if (token_refresh) {
         localStorage.removeItem("jwt-token-refresh");
       }
-      EventBus.$emit('show-modal', { title: 'Log-out Successful', message: 'You are now logged out!'} );
+      EventBus.$emit("show-modal", {
+        title: "Log-out Successful",
+        message: "You are now logged out!",
+      });
       await router.push({ name: "login" });
     },
-    
-  }
+  },
 };
 </script>

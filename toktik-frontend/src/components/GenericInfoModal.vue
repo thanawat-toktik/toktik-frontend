@@ -35,9 +35,6 @@ export default {
   created() {
     EventBus.$on("show-modal", (data) => {
       this.showModal = true;
-
-      console.log(data.title);
-      console.log(data.message);
       this.modalHeader = data.title;
       this.modalMessage = data.message;
     });

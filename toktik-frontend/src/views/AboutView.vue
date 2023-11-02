@@ -23,7 +23,7 @@ export default {
   methods: {
     playVideo() {
       EventBus.$emit("play-video-once", 20);
-    }
-  }
+    },
+  },
 };
 </script>
