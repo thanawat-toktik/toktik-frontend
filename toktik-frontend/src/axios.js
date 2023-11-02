@@ -75,7 +75,7 @@ instance.interceptors.response.use(
     if (status === 401) {
       EventBus.$emit("show-modal", {
         title: "Unauthorized",
-        message: "Please Log-in again",
+        message: "Your session has expired. Please Log-in again.",
       });
       const token = localStorage.getItem("jwt-token");
       if (token) {
@@ -89,6 +89,7 @@ instance.interceptors.response.use(
       instance.defaults.headers.common["Authorization"] = "";
 
       router.push("/login").catch(() => {});
+      return Promise.reject(error);
     }
 
     EventBus.$emit("show-modal", {
