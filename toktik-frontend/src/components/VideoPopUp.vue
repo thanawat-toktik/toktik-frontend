@@ -32,6 +32,7 @@ export default {
   },
   created() {
     EventBus.$on("play-video", async (videoId) => {
+      this.playOnce = false;
       this.showVideo = false;
       this.videoId = videoId;
       await nextTick();
