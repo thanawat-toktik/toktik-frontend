@@ -16,10 +16,9 @@ Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 
 // Components
-Vue.component('VideoPlayer', VideoPlayer);
+Vue.component("VideoPlayer", VideoPlayer);
 
 new Vue({
   router,
   render: (h) => h(App),
 }).$mount("#app");
-

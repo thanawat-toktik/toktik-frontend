@@ -1,34 +1,34 @@
 <template>
-<div class="custom-modal-backdrop" v-if="showPopUp">
-  <span class="close-button" @click="closePopUp">X</span>
-  <span class="prev-button" @click="prevVideo">&lt;</span>
-  <span class="next-button" @click="nextVideo">&gt;</span>
-  <div class="video-player" v-if="showVideo">
-    <VideoPlayer
-      :video="videoId" 
-      :playOnce="playOnce"
-      class="center-fit"
-    ></VideoPlayer>
+  <div class="custom-modal-backdrop" v-if="showPopUp">
+    <span class="close-button" @click="closePopUp">X</span>
+    <span class="prev-button" @click="prevVideo">&lt;</span>
+    <span class="next-button" @click="nextVideo">&gt;</span>
+    <div class="video-player" v-if="showVideo">
+      <VideoPlayer
+        :video="videoId"
+        :playOnce="playOnce"
+        class="center-fit"
+      ></VideoPlayer>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-import { nextTick } from 'vue';
+import { nextTick } from "vue";
 import { EventBus } from "@/eventBus";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 
 export default {
   data() {
-      return {
-          components: {
-              VideoPlayer,
-          },
-          showPopUp: false,
-          showVideo: false,
-          videoId: -1,
-          playOnce: false,
-      };
+    return {
+      components: {
+        VideoPlayer,
+      },
+      showPopUp: false,
+      showVideo: false,
+      videoId: -1,
+      playOnce: false,
+    };
   },
   created() {
     EventBus.$on("play-video", async (videoId) => {
@@ -51,15 +51,15 @@ export default {
     });
   },
   methods: {
-      closePopUp() {
-        this.showPopUp = false;
-      },
-      nextVideo() {
-        EventBus.$emit("play-next-video")
-      },
-      prevVideo() {
-        EventBus.$emit("play-prev-video")
-      },
+    closePopUp() {
+      this.showPopUp = false;
+    },
+    nextVideo() {
+      EventBus.$emit("play-next-video");
+    },
+    prevVideo() {
+      EventBus.$emit("play-prev-video");
+    },
   },
 };
 </script>

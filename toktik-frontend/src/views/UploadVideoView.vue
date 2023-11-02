@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import axios from '@/axios';
+import axios from "@/axios";
 import { v4 } from "uuid";
 
 export default {
@@ -123,7 +123,7 @@ export default {
       const s3ObjectName = `${v4()}.${this.form.file.name.split(".").pop()}`;
       const presignedUrlFormData = new FormData();
       presignedUrlFormData.append("key", s3ObjectName);
-      
+
       const response = await axios({
         method: "POST",
         url: `/api/video/upload-psurl/`,

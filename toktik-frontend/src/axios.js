@@ -1,93 +1,103 @@
-import axios from 'axios';
-import { EventBus } from './eventBus';
-import router from './router';
+import axios from "axios";
+import { EventBus } from "./eventBus";
+import router from "@/router";
 
 const instance = axios.create();
 
-const token = localStorage.getItem('jwt-token');
+const token = localStorage.getItem("jwt-token");
 if (token) {
-    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
+
+instance.interceptors.request.use(
+  async (config) => {
+    if (!localStorage.getItem("jwt-token")) {
+      router.push("/login").catch(() => {});
+      return;
+    }
+
+    const newAxios = axios.create();
+    newAxios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          return Promise.resolve({ isError: false, response: error.response });
+        }
+      }
+    );
+    try {
+      const tokenCheckResponse = await newAxios.post("/api/auth/jwt/verify/", {
+        token: localStorage.getItem("jwt-token"),
+      });
+      if (
+        tokenCheckResponse.response.status === 401 &&
+        localStorage.getItem("jwt-token-refresh")
+      ) {
+        try {
+          const refresherResponse = await newAxios.post(
+            "/api/auth/jwt/refresh/",
+            { refresh: localStorage.getItem("jwt-token-refresh") }
+          );
+          localStorage.setItem("jwt-token", refresherResponse.data.access);
+          instance.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${refresherResponse.data.access}`;
+          config.headers.Authorization = `Bearer ${refresherResponse.data.access}`;
+          return config;
+        } catch (e) {
+          localStorage.removeItem("jwt-token");
+          localStorage.removeItem("jwt-token-refresh");
+          EventBus.$emit("show-modal", {
+            title: "Unauthorized",
+            message: "Your session has expired. Please Log-in again",
+          });
+          router.push("/login").catch(() => {});
+        }
+      }
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // ERROR INTERCEPT
 instance.interceptors.response.use(
-    (response) => {
-      return response
-    }, 
-    async (error) => {
-      EventBus.$emit('stop-video'); // done in attempt to stop any active video
-      const status = error.response.status ?? 0
-      if (status === 401) {
-        EventBus.$emit('show-modal', { title: 'Unauthorized', message: 'Please Log-in again'} );
-        const token = localStorage.getItem('jwt-token')
-        if (token) {
-          localStorage.removeItem('jwt-token')
-        }
-        const refresh_token = localStorage.getItem('jwt-token-refresh')
-        if (refresh_token) {
-          localStorage.removeItem('jwt-token-refresh')
-        }
-        
-        instance.defaults.headers.common['Authorization'] = '';
-        instance.defaults.headers.common['Authorization'] = '';
-
-        router.push('/login')
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    EventBus.$emit("stop-video"); // done in attempt to stop any active video
+    const status = error.response.status ?? 0;
+    if (status === 401) {
+      EventBus.$emit("show-modal", {
+        title: "Unauthorized",
+        message: "Your session has expired. Please Log-in again.",
+      });
+      const token = localStorage.getItem("jwt-token");
+      if (token) {
+        localStorage.removeItem("jwt-token");
       }
-  
-      EventBus.$emit('show-modal', { title: 'Error occurred', message: error.message} );
-      return Promise.reject(error)
-    })
-  
-  // Vue.axios.interceptors.response.use(
-  //   (response) => {
-  //     return response
-  //   }, 
-  //   async (error) => {
-  //     console.log(error)
-  //     if (!error.response) {
-  //       console.log("Unhandled error")
-  //     }
-  //     if (error.response.status === 401) {
-  
-  //       // checks if there's a pre-existing accesstoken
-  //       const token = localStorage.getItem('jwt-token')
-  //       if (!token) {
-  //         router.push('/login')
-  //       }
-  //       if (token) { // remove existing token
-  //         localStorage.removeItem('jwt-token')
-  //       }
-        
-        
-  //       // checks for refresh token
-  //       const refresh_token = localStorage.getItem('jwt-token-refresh')
-  //       if (!refresh_token) { // needs to log in if no refresh token
-  //         router.push('/login')
-  //       }
-  
-  //       try { // try to get new token
-  //         const formData = new FormData();
-  //         formData.append('refresh', refresh_token)
-  
-  //         const response = Vue.axios({
-  //           method: "POST",
-  //           url: `${process.env.VUE_APP_BACKEND_HOST}/auth/jwt/refresh/`,
-  //           data: formData,
-  //         });
-  //         // TODO: solve why this returns nothing
-  //         console.log(`Response: ${JSON.stringify(response)}`);
-  //         // applies new token
-  //         Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access;
-  //         localStorage.setItem( 'jwt-token', response.data.access );
-  //       }
-  //       catch (error) {
-  //         console.log(error)
-  //         // forces user to get a new token
-  //         localStorage.removeItem('jwt-token-refresh')
-  //         await router.push({ name: "login" });
-  //       }      
-  //     }
-  //     return Promise.reject(error)
-  //   })
-  
+      const refresh_token = localStorage.getItem("jwt-token-refresh");
+      if (refresh_token) {
+        localStorage.removeItem("jwt-token-refresh");
+      }
+
+      instance.defaults.headers.common["Authorization"] = "";
+
+      router.push("/login").catch(() => {});
+      return Promise.reject(error);
+    }
+
+    EventBus.$emit("show-modal", {
+      title: "Error occurred",
+      message: error.message,
+    });
+    return Promise.reject(error);
+  }
+);
+
 export default instance;

@@ -101,14 +101,13 @@ export default {
         formData.append("display_name", this.displayname);
         formData.append("email", this.email);
         formData.append("password", this.password);
-        
+
+        // eslint-disable-next-line no-unused-vars
         const response = await axios({
           method: "POST",
           url: `/api/auth/register/`,
           data: formData,
         });
-
-        console.log(`Response: ${JSON.stringify(response.data)}`);
 
         await router.push({ name: "login" });
       } catch (error) {

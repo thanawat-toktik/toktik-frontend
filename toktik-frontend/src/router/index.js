@@ -58,7 +58,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   // console.log(to)
   if (to.name === "login" || to.name === "register") {
-    EventBus.$emit('token-update');
+    EventBus.$emit("token-update");
     next();
   }
 
@@ -73,7 +73,7 @@ router.beforeEach(async (to, from, next) => {
   ) {
     return router.push("/login").catch(() => {});
   }
-  EventBus.$emit('token-update');
+  EventBus.$emit("token-update");
   next();
 });
 

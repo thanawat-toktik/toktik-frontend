@@ -1,14 +1,14 @@
 <template>
   <div v-show="videoLoaded" class="video-container">
     <video
-        ref="s3VideoPlayer"
-        id="video"
-        class="video-js vjs-default-skin vjs-16-9"
-        preload="auto"
-        crossorigin="use-credentials"
-        controls
-        data-setup='{ "fluid": true }'
-        autoplay="autoplay"
+      ref="s3VideoPlayer"
+      id="video"
+      class="video-js vjs-default-skin vjs-16-9"
+      preload="auto"
+      crossorigin="use-credentials"
+      controls
+      data-setup='{ "fluid": true }'
+      autoplay="autoplay"
     ></video>
   </div>
 </template>
@@ -17,7 +17,7 @@
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-contrib-hls";
-import axios from '@/axios';
+import axios from "@/axios";
 import { EventBus } from "@/eventBus";
 
 export default {
@@ -57,7 +57,7 @@ export default {
           },
           credentials: "include",
         });
-        const playlistBlob = new Blob([response.data], {type: "text/plain"});
+        const playlistBlob = new Blob([response.data], { type: "text/plain" });
         const playlistURL = URL.createObjectURL(playlistBlob);
         if (!this.player) {
           this.initVideoPlayer(playlistURL);
@@ -91,13 +91,13 @@ export default {
         console.error("VIDEOJS: ERROR:", error);
       });
       this.player.on("ended", () => {
-        if ( !this.playOnce ) {
+        if (!this.playOnce) {
           this.increaseView();
-          EventBus.$emit("play-next-video")
+          EventBus.$emit("play-next-video");
         }
         // if you want the player to go away after ending (for play once)
         // do this --> EventBus.$emit("stop-video")
-      })
+      });
     },
 
     async increaseView() {
@@ -110,8 +110,7 @@ export default {
       } catch (error) {
         console.error("Error downloading file:", error);
       }
-      
-    }
+    },
   },
 };
 </script>

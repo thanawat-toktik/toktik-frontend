@@ -46,7 +46,8 @@
 
 <script>
 import router from "@/router";
-import axios from '@/axios';
+import axios from "axios";
+import instance from "@/axios";
 
 export default {
   data() {
@@ -63,23 +64,16 @@ export default {
         formData.append("email", this.email);
         formData.append("password", this.password);
 
-        const response = await axios({
-          method: "POST",
-          url: `/api/auth/jwt/create/`,
-          data: formData,
-          credentials: "include",
-          // withCredentials: true
-        });
+        const response = await axios
+          .create()
+          .post(`/api/auth/jwt/create/`, formData);
 
-        console.log(`Response: ${JSON.stringify(response.data)}`);
-
-        // after login, include jwt token to every header        
+        // after login, include jwt token to every header
         localStorage.setItem("jwt-token", response.data.access);
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
-        this.axios.defaults.headers.common["Authorization"] =
+        instance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
-        
-        
+
         await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
