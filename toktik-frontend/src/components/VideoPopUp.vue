@@ -32,10 +32,11 @@ export default {
   },
   created() {
     EventBus.$on("play-video", async (videoId) => {
+      this.showVideo = false;
       this.videoId = videoId;
       await nextTick();
       this.showPopUp = true;
-      this.showVideo = true;  
+      this.showVideo = true;
     });
     EventBus.$on("play-video-once", async (videoId) => {
       this.playOnce = true;
@@ -54,14 +55,10 @@ export default {
         this.showPopUp = false;
       },
       nextVideo() {
-        this.showVideo = false;
         EventBus.$emit("play-next-video")
-        console.log("next vid")
       },
       prevVideo() {
-        this.showVideo = false;
         EventBus.$emit("play-prev-video")
-        console.log("prev vid")
       },
   },
 };

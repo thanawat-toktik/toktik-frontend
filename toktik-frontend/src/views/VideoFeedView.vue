@@ -44,7 +44,6 @@ export default {
     EventBus.$on("play-next-video", () => {
       // when it goes over the array
       if (this.current_video_index + 1 >= this.videos.length) {
-        
         EventBus.$emit("stop-video");
       } else {
         ++this.current_video_index;
