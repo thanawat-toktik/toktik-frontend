@@ -81,7 +81,11 @@ export default {
         this.videos.forEach(video => {
           this.video_ids.push(video.id)
         })
-        await this.fetchThumbnails()
+
+        console.log(this.video_ids.length)
+        if (this.video_ids.length != 0) {
+          await this.fetchThumbnails()
+        }
 
       } catch (error) {
         this.error = "An error occurred during fetching video feed. Please try again.";

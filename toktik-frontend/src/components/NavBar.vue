@@ -21,9 +21,6 @@
         <b-nav-item to="/feed" v-if="isLoggedIn">
           <b-nav-text>Feed</b-nav-text>
         </b-nav-item>
-        <b-nav-item to="/about">
-          <b-nav-text>About</b-nav-text>
-        </b-nav-item>
         <b-nav-item v-if="isLoggedIn">
           <b-nav-text v-on:click="onLogout">Logout</b-nav-text>
         </b-nav-item>
