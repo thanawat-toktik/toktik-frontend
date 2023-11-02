@@ -3,14 +3,13 @@
     <h1>THE FEED</h1>
     <!-- This is the whole page -->
     <div class="feed_container">
-
       <!-- This is for each video -->
       <div v-for="(video, index) in videos" :key="index" class="video_block">
         <div>
           <img
-              :src="video_thumbnails[index]"
-              alt="Thumbnail"
-              @click="viewVideo(video.id, index)"
+            :src="video_thumbnails[index]"
+            alt="Thumbnail"
+            @click="viewVideo(video.id, index)"
           />
         </div>
         <div class="video_block__text">
@@ -20,12 +19,11 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import axios from '@/axios';
+import axios from "@/axios";
 import { EventBus } from "@/eventBus";
 
 export default {
@@ -47,7 +45,7 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         ++this.current_video_index;
-        const videoId = this.video_ids[ this.current_video_index ]
+        const videoId = this.video_ids[this.current_video_index];
         EventBus.$emit("play-video", videoId);
       }
     });
@@ -58,7 +56,7 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         --this.current_video_index;
-        const videoId = this.video_ids[ this.current_video_index ]
+        const videoId = this.video_ids[this.current_video_index];
         EventBus.$emit("play-video", videoId);
       }
     });
@@ -78,13 +76,13 @@ export default {
         });
 
         this.videos = response.data;
-        this.videos.forEach(video => {
-          this.video_ids.push(video.id)
-        })
-        await this.fetchThumbnails()
-
+        this.videos.forEach((video) => {
+          this.video_ids.push(video.id);
+        });
+        await this.fetchThumbnails();
       } catch (error) {
-        this.error = "An error occurred during fetching video feed. Please try again.";
+        this.error =
+          "An error occurred during fetching video feed. Please try again.";
         console.error("Error:", error);
       }
     },
@@ -92,11 +90,11 @@ export default {
     async fetchThumbnails() {
       const formData = new FormData();
       formData.append("video_ids", this.video_ids);
-      formData.append("bucket", 'thumbnail');
+      formData.append("bucket", "thumbnail");
       const response = await axios({
         method: "POST",
         url: `/api/video/get-url/`,
-        data: formData
+        data: formData,
       });
       this.video_thumbnails = response.data.urls;
     },
