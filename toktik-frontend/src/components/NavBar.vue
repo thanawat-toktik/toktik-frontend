@@ -1,9 +1,9 @@
 <template>
-  <b-navbar toggleable="sm">
+  <b-navbar toggleable="sm" class="navbar" fixed="top">
     <b-navbar-brand href="#">
       <img
         src="../assets/logo-icon-small.png"
-        alt="Toktik Logo"
+        alt="Toktik logo"
         style="height: 35px"
       />
       <img
@@ -14,24 +14,24 @@
     </b-navbar-brand>
 
     <b-collapse id="nav-text-collapse" is-nav>
-      <b-navbar-nav justified align="right" fill>
-        <b-nav-item to="/" v-if="isLoggedIn">
-          <b-nav-text>Home</b-nav-text>
-        </b-nav-item>
+      <b-navbar-nav align="right" fill>
         <b-nav-item to="/feed" v-if="isLoggedIn">
           <b-nav-text>Feed</b-nav-text>
         </b-nav-item>
-        <b-nav-item v-if="isLoggedIn">
-          <b-nav-text v-on:click="onLogout">Logout</b-nav-text>
+        <b-nav-item to="/" v-if="isLoggedIn">
+          <b-nav-text>My Videos</b-nav-text>
         </b-nav-item>
         <b-nav-item to="/login" v-else>
           <b-nav-text>Login</b-nav-text>
         </b-nav-item>
-        <b-nav-item to="/register">
+        <b-nav-item to="/register" v-if="!isLoggedIn">
           <b-nav-text>Register</b-nav-text>
         </b-nav-item>
         <b-nav-item to="/upload" v-if="isLoggedIn">
           <b-nav-text>Upload</b-nav-text>
+        </b-nav-item>
+        <b-nav-item v-if="isLoggedIn">
+          <b-nav-text v-on:click="onLogout">Logout</b-nav-text>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
@@ -84,3 +84,12 @@ export default {
   },
 };
 </script>
+
+<style>
+.navbar {
+  background-color: #fff;
+  height: 60px;
+  border-bottom: 1px solid lightgrey;
+  margin-bottom: -1px;
+}
+</style>
