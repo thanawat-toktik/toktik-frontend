@@ -34,12 +34,27 @@
           <b-nav-text class="navbar-text">Register</b-nav-text>
         </b-nav-item>
         <b-nav-item v-if="isLoggedIn">
-          <b-iconstack scale="1.2">
+          <b-iconstack scale="1.2" id="notification-bell">
             <b-icon stacked style="color: black;" icon="bell"></b-icon>
             <b-icon stacked style="color: white;" shift-h="5" shift-v="5" scale="0.55" icon="circle-fill"></b-icon>
             <b-icon stacked style="color: red;" shift-h="5" shift-v="5" scale="0.45" icon="circle-fill"></b-icon>
           </b-iconstack>
         </b-nav-item>
+        <b-popover target="notification-bell"
+                   class="notification-popover"
+                   triggers="focus"
+                   title="What's new?"
+                   placement="bottomleft"
+                   no-fade
+        >
+          <b-card no-body border-variant="white" class="notification-card">
+            <b-list-group v-if="notifications" flush>
+              <b-list-group-item v-for="notification in notifications" :key="notification">
+                {{ notification }}
+              </b-list-group-item>
+            </b-list-group>
+          </b-card>
+        </b-popover>
         <b-nav-item v-if="isLoggedIn">
           <b-icon style="color: black; scale: 1.25;" icon="door-open" v-on:click="onLogout"></b-icon>
         </b-nav-item>
@@ -59,6 +74,8 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      notifications: ["God is dead", "God remains dead", "And we have killed him"]
+      // notifications: []
     };
   },
   created() {
@@ -107,5 +124,11 @@ export default {
   font-weight: 700;
   font-size: 18px;
   color: #111111;
+}
+
+.notification-card {
+  width: 250px;
+  margin: 0;
+  overflow-y: scroll;
 }
 </style>
