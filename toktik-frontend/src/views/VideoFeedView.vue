@@ -76,14 +76,13 @@ export default {
         });
 
         this.videos = response.data;
-        this.videos.forEach(video => {
-          this.video_ids.push(video.id)
+        this.videos.forEach((video) => {
+          this.video_ids.push(video.id);
         });
 
         if (this.video_ids.length != 0) {
-          await this.fetchThumbnails()
+          await this.fetchThumbnails();
         }
-
       } catch (error) {
         this.error =
           "An error occurred during fetching video feed. Please try again.";

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {EventBus} from "./eventBus";
+import { EventBus } from "./eventBus";
 import router from "@/router";
 
 const instance = axios.create();
@@ -12,17 +12,16 @@ if (token) {
 instance.interceptors.request.use(
   async (config) => {
     if (!localStorage.getItem("jwt-token")) {
-      router.push("/login").catch(() => {
-      });
+      router.push("/login").catch(() => {});
       return;
     }
-    
+
     const newAxios = axios.create();
     newAxios.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response.status === 401) {
-          return Promise.resolve({isError: false, response: error.response});
+          return Promise.resolve({ isError: false, response: error.response });
         }
       }
     );
@@ -37,12 +36,12 @@ instance.interceptors.request.use(
         try {
           const refresherResponse = await newAxios.post(
             "/api/auth/jwt/refresh/",
-            {refresh: localStorage.getItem("jwt-token-refresh")}
+            { refresh: localStorage.getItem("jwt-token-refresh") }
           );
           localStorage.setItem("jwt-token", refresherResponse.data.access);
           instance.defaults.headers.common[
             "Authorization"
-            ] = `Bearer ${refresherResponse.data.access}`;
+          ] = `Bearer ${refresherResponse.data.access}`;
           config.headers.Authorization = `Bearer ${refresherResponse.data.access}`;
           return config;
         } catch (e) {
@@ -52,14 +51,12 @@ instance.interceptors.request.use(
             title: "Unauthorized",
             message: "Your session has expired. Please Log-in again",
           });
-          router.push("/login").catch(() => {
-          });
+          router.push("/login").catch(() => {});
         }
       }
       // eslint-disable-next-line no-empty
-    } catch (error) {
-    }
-    
+    } catch (error) {}
+
     return config;
   },
   (error) => {
@@ -88,14 +85,13 @@ instance.interceptors.response.use(
       if (refresh_token) {
         localStorage.removeItem("jwt-token-refresh");
       }
-      
+
       instance.defaults.headers.common["Authorization"] = "";
-      
-      router.push("/login").catch(() => {
-      });
+
+      router.push("/login").catch(() => {});
       return Promise.reject(error);
     }
-    
+
     EventBus.$emit("show-modal", {
       title: "Error occurred",
       message: error.message,
