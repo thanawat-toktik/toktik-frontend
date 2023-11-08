@@ -1,15 +1,27 @@
 <template>
   <div class="custom-modal-backdrop" v-if="showPopUp">
-    <span class="close-button" @click="closePopUp">X</span>
-    <span class="prev-button" @click="prevVideo">&lt;</span>
-    <span class="next-button" @click="nextVideo">&gt;</span>
-    <div class="video-player" v-if="showVideo">
-      <VideoPlayer
-        :video="videoId"
-        :playOnce="playOnce"
-        class="center-fit"
-      ></VideoPlayer>
-    </div>
+    <span class="close-button" @click="closePopUp">
+      <b-icon icon="x-lg"></b-icon>
+    </span>
+    <span class="prev-button" @click="prevVideo">
+      <b-icon icon="chevron-left"></b-icon>
+    </span>
+    <span class="next-button" @click="nextVideo">
+      <b-icon icon="chevron-right"></b-icon>
+    </span>
+    <b-card class="video-player" v-if="showVideo" no-body border-variant="dark">
+      <b-row>
+        <b-col cols="8">
+          <VideoPlayer :video="videoId" :playOnce="playOnce"></VideoPlayer>
+        </b-col>
+        <b-col class="custom-vid-details">
+          <h1>{{ videoTitle }}</h1>
+          <h5>
+            uploaded by <b>{{ videoOwner }}</b>
+          </h5>
+        </b-col>
+      </b-row>
+    </b-card>
   </div>
 </template>
 
@@ -27,14 +39,18 @@ export default {
       showPopUp: false,
       showVideo: false,
       videoId: -1,
+      videoTitle: "",
+      videoOwner: "",
       playOnce: false,
     };
   },
   created() {
-    EventBus.$on("play-video", async (videoId) => {
+    EventBus.$on("play-video", async (video) => {
       this.playOnce = false;
       this.showVideo = false;
-      this.videoId = videoId;
+      this.videoId = video.id;
+      this.videoTitle = video.title;
+      this.videoOwner = video.uploader.username;
       await nextTick();
       this.showPopUp = true;
       this.showVideo = true;
@@ -74,24 +90,18 @@ export default {
   right: 0;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   z-index: 11000;
 }
 
-.video-player {
-  position: fixed;
-  width: 80%;
-  height: 80%;
-  transform: translate(0%, -10%);
-  border-radius: 5px;
-  z-index: 11001;
+.custom-vid-details {
+  padding: 10px;
+  text-align: left;
 }
 
-.center-fit {
-  max-width: 100%;
-  max-height: 100vh;
-  margin: auto;
+.video-player {
+  max-height: 90%;
+  width: 75%;
 }
 
 .close-button {
@@ -101,7 +111,6 @@ export default {
   cursor: pointer;
   z-index: 11002;
   color: white;
-  font-size: larger;
 }
 
 .prev-button {
@@ -110,14 +119,13 @@ export default {
   cursor: pointer;
   z-index: 11002;
   color: white;
-  font-size: larger;
 }
+
 .next-button {
   position: fixed;
   right: 10px;
   cursor: pointer;
   z-index: 11002;
   color: white;
-  font-size: larger;
 }
 </style>

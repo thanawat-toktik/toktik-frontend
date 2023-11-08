@@ -9,7 +9,7 @@
           <img
             :src="video_thumbnails[index]"
             alt="Thumbnail"
-            @click="viewVideo(video.id, index)"
+            @click="viewVideo(video, index)"
           />
         </div>
         <div class="video_block__text">
@@ -45,8 +45,8 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         ++this.current_video_index;
-        const videoId = this.video_ids[this.current_video_index];
-        EventBus.$emit("play-video", videoId);
+        const video = this.videos[this.current_video_index];
+        EventBus.$emit("play-video", video);
       }
     });
 
@@ -56,15 +56,15 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         --this.current_video_index;
-        const videoId = this.video_ids[this.current_video_index];
-        EventBus.$emit("play-video", videoId);
+        const video = this.videos[this.current_video_index];
+        EventBus.$emit("play-video", video);
       }
     });
   },
 
   methods: {
-    viewVideo(videoId, index) {
-      EventBus.$emit("play-video", videoId);
+    viewVideo(video, index) {
+      EventBus.$emit("play-video", video);
       this.current_video_index = index;
     },
 
@@ -140,7 +140,6 @@ export default {
 }
 
 .video_block__text {
-  /* padding-left: 50px; */
   padding-left: 15%;
   padding-top: 5px;
   text-align: left;
