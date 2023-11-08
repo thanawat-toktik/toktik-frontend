@@ -2,14 +2,14 @@
   <b-navbar toggleable="sm" class="navbar" fixed="top" justified>
     <b-navbar-brand href="#">
       <img
-          src="../assets/logo-icon-small.png"
-          alt="Toktik logo"
-          style="height: 35px"
+        src="../assets/logo-icon-small.png"
+        alt="Toktik logo"
+        style="height: 35px"
       />
       <img
-          src="../assets/logo-text.png"
-          alt="Toktik text"
-          style="height: 35px"
+        src="../assets/logo-text.png"
+        alt="Toktik text"
+        style="height: 35px"
       />
     </b-navbar-brand>
 
@@ -35,46 +35,77 @@
         </b-nav-item>
         <b-nav-item v-if="isLoggedIn">
           <b-iconstack scale="1.2" id="notification-bell">
-            <b-icon stacked style="color: black;" icon="bell"></b-icon>
-            <b-icon stacked style="color: white;" shift-h="5" shift-v="5" scale="0.55" icon="circle-fill"></b-icon>
-            <b-icon stacked style="color: red;" shift-h="5" shift-v="5" scale="0.45" icon="circle-fill"></b-icon>
+            <b-icon stacked style="color: black" icon="bell"></b-icon>
+            <b-icon
+              stacked
+              style="color: white"
+              shift-h="5"
+              shift-v="5"
+              scale="0.55"
+              icon="circle-fill"
+              v-if="notifications.length !== 0"
+            ></b-icon>
+            <b-icon
+              stacked
+              style="color: red"
+              shift-h="5"
+              shift-v="5"
+              scale="0.45"
+              icon="circle-fill"
+              v-if="notifications.length !== 0"
+            ></b-icon>
           </b-iconstack>
         </b-nav-item>
-        <b-popover target="notification-bell"
-                   class="notification-popover"
-                   triggers="focus"
-                   title="What's new?"
-                   placement="bottomleft"
-                   no-fade
+        <b-popover
+          target="notification-bell"
+          class="notification-popover"
+          triggers="focus"
+          title="What's new?"
+          placement="bottomleft"
+          no-fade
         >
           <b-card no-body border-variant="white" class="notification-card">
             <b-list-group v-if="notifications" flush>
-              <b-list-group-item v-for="notification in notifications" :key="notification">
+              <b-list-group-item
+                v-for="notification in notifications"
+                :key="notification"
+              >
                 {{ notification }}
               </b-list-group-item>
             </b-list-group>
           </b-card>
         </b-popover>
         <b-nav-item v-if="isLoggedIn">
-          <b-icon style="color: black; scale: 1.25;" icon="door-open" v-on:click="onLogout"></b-icon>
+          <b-icon
+            style="color: black; scale: 1.25"
+            icon="door-open"
+            v-on:click="onLogout"
+          ></b-icon>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
-    <b-navbar-toggle style="background: white;" target="nav-text-collapse"></b-navbar-toggle>
+    <b-navbar-toggle
+      style="background: white"
+      target="nav-text-collapse"
+    ></b-navbar-toggle>
   </b-navbar>
 </template>
 
 <script>
 import router from "@/router";
 import axios from "@/axios";
-import {EventBus} from "@/eventBus";
+import { EventBus } from "@/eventBus";
 
 export default {
   name: "NavBar",
   data() {
     return {
       isLoggedIn: false,
-      notifications: ["God is dead", "God remains dead", "And we have killed him"]
+      notifications: [
+        "God is dead",
+        "God remains dead",
+        "And we have killed him",
+      ],
       // notifications: []
     };
   },
@@ -106,7 +137,7 @@ export default {
         title: "Log-out Successful",
         message: "You are now logged out!",
       });
-      await router.push({name: "login"});
+      await router.push({ name: "login" });
     },
   },
 };
