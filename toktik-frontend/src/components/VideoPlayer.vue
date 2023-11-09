@@ -48,6 +48,9 @@ export default {
   },
   methods: {
     async getVideo() {
+      if (this.videoId < 0) {
+        return;
+      }
       try {
         const response = await axios({
           method: "GET",
