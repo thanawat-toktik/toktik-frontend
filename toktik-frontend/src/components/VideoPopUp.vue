@@ -15,10 +15,23 @@
           <VideoPlayer :video="videoId" :playOnce="playOnce"></VideoPlayer>
         </b-col>
         <b-col class="custom-vid-details">
-          <h1>{{ videoTitle }}</h1>
-          <h5>
-            uploaded by <b>{{ videoOwner }}</b>
-          </h5>
+          <b-row>
+            <b-col>
+              <h1>{{ videoTitle }}</h1>
+              <h5>
+                uploaded by <b>{{ videoOwner }}</b>
+              </h5>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-button pill variant="light">
+                <b-icon icon="heart" v-if="!this.isLiked"></b-icon>
+                <b-icon icon="heart-fill" v-else></b-icon>
+                Nice!
+              </b-button>
+            </b-col>
+          </b-row>
         </b-col>
       </b-row>
     </b-card>
@@ -29,6 +42,7 @@
 import { nextTick } from "vue";
 import { EventBus } from "@/eventBus";
 import VideoPlayer from "@/components/VideoPlayer.vue";
+import axios from "@/axios";
 
 export default {
   data() {
@@ -42,15 +56,19 @@ export default {
       videoTitle: "",
       videoOwner: "",
       playOnce: false,
+      isLiked: false,
     };
   },
-  created() {
+  async created() {
     EventBus.$on("play-video", async (video) => {
+      this.isLiked = false;
       this.playOnce = false;
       this.showVideo = false;
       this.videoId = video.id;
       this.videoTitle = video.title;
       this.videoOwner = video.uploader.username;
+      await this.fetchLike();
+
       await nextTick();
       this.showPopUp = true;
       this.showVideo = true;
@@ -76,6 +94,19 @@ export default {
     },
     prevVideo() {
       EventBus.$emit("play-prev-video");
+    },
+    async fetchLike() {
+      await axios
+        .get("/api/video/like/", {
+          withCredentials: true,
+          params: { videoId: this.videoId },
+        })
+        .then((response) => {
+          this.isLiked = response.data.isLiked;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

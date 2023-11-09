@@ -80,7 +80,7 @@ export default {
           this.video_ids.push(video.id);
         });
 
-        if (this.video_ids.length != 0) {
+        if (this.video_ids.length !== 0) {
           await this.fetchThumbnails();
         }
       } catch (error) {
@@ -108,15 +108,6 @@ export default {
 <style>
 /* Thank you, aj.Boonyanit */
 .feed_container {
-  /* 
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-content: flex-start;
-  padding: 3rem; 
-  */
-
   display: grid;
   grid-template-columns: repeat(auto-fit, 400px);
   grid-gap: 5px;
