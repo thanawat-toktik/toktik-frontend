@@ -25,11 +25,13 @@
           </b-row>
           <b-row>
             <b-col>
-              <b-button pill variant="light">
+              <b-button pill variant="light" @click="onLike">
                 <b-icon icon="heart" v-if="!this.isLiked"></b-icon>
-                <b-icon icon="heart-fill" v-else></b-icon>
+                <b-icon icon="heart-fill" v-else style="color: red"></b-icon>
                 Nice!
               </b-button>
+              <br />
+              ({{ likeCount }} thinks so)
             </b-col>
           </b-row>
         </b-col>
@@ -57,6 +59,7 @@ export default {
       videoOwner: "",
       playOnce: false,
       isLiked: false,
+      likeCount: 0,
     };
   },
   async created() {
@@ -85,6 +88,11 @@ export default {
       this.videoId = -1;
     });
   },
+  destroyed() {
+    EventBus.$off("play-video");
+    EventBus.$off("play-video-once");
+    EventBus.$off("stop-video");
+  },
   methods: {
     closePopUp() {
       this.showPopUp = false;
@@ -103,10 +111,26 @@ export default {
         })
         .then((response) => {
           this.isLiked = response.data.isLiked;
+          this.likeCount = response.data.likeCount;
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(() => {});
+    },
+    async onLike() {
+      const response = await axios.post(
+        "/api/video/like/",
+        {
+          video_id: this.videoId,
+          isLiked: !this.isLiked,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 201) {
+        this.isLiked = !this.isLiked;
+        this.likeCount = this.isLiked ? this.likeCount + 1 : this.likeCount - 1;
+      }
     },
   },
 };
