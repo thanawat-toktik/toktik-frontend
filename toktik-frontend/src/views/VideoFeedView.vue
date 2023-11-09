@@ -9,7 +9,7 @@
           <img
             :src="video_thumbnails[index]"
             alt="Thumbnail"
-            @click="viewVideo(video.id, index)"
+            @click="viewVideo(video, index)"
           />
         </div>
         <div class="video_block__text">
@@ -45,8 +45,8 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         ++this.current_video_index;
-        const videoId = this.video_ids[this.current_video_index];
-        EventBus.$emit("play-video", videoId);
+        const video = this.videos[this.current_video_index];
+        EventBus.$emit("play-video", video);
       }
     });
 
@@ -56,15 +56,15 @@ export default {
         EventBus.$emit("stop-video");
       } else {
         --this.current_video_index;
-        const videoId = this.video_ids[this.current_video_index];
-        EventBus.$emit("play-video", videoId);
+        const video = this.videos[this.current_video_index];
+        EventBus.$emit("play-video", video);
       }
     });
   },
 
   methods: {
-    viewVideo(videoId, index) {
-      EventBus.$emit("play-video", videoId);
+    viewVideo(video, index) {
+      EventBus.$emit("play-video", video);
       this.current_video_index = index;
     },
 
@@ -76,14 +76,13 @@ export default {
         });
 
         this.videos = response.data;
-        this.videos.forEach(video => {
-          this.video_ids.push(video.id)
+        this.videos.forEach((video) => {
+          this.video_ids.push(video.id);
         });
 
-        if (this.video_ids.length != 0) {
-          await this.fetchThumbnails()
+        if (this.video_ids.length !== 0) {
+          await this.fetchThumbnails();
         }
-
       } catch (error) {
         this.error =
           "An error occurred during fetching video feed. Please try again.";
@@ -109,15 +108,6 @@ export default {
 <style>
 /* Thank you, aj.Boonyanit */
 .feed_container {
-  /* 
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-content: flex-start;
-  padding: 3rem; 
-  */
-
   display: grid;
   grid-template-columns: repeat(auto-fit, 400px);
   grid-gap: 5px;
@@ -141,7 +131,6 @@ export default {
 }
 
 .video_block__text {
-  /* padding-left: 50px; */
   padding-left: 15%;
   padding-top: 5px;
   text-align: left;

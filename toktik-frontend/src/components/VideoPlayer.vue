@@ -1,14 +1,14 @@
 <template>
-  <div v-show="videoLoaded" class="video-container">
+  <div v-show="videoLoaded">
     <video
       ref="s3VideoPlayer"
       id="video"
-      class="video-js vjs-default-skin vjs-16-9"
+      class="video-js vjs-default-skin vjs-1-1"
       preload="auto"
       crossorigin="use-credentials"
       controls
-      data-setup='{ "fluid": true }'
       autoplay="autoplay"
+      width="1000"
     ></video>
   </div>
 </template>
@@ -48,6 +48,9 @@ export default {
   },
   methods: {
     async getVideo() {
+      if (this.videoId < 0) {
+        return;
+      }
       try {
         const response = await axios({
           method: "GET",
@@ -69,9 +72,6 @@ export default {
     },
 
     initVideoPlayer(fileUrl) {
-      // videojs.options.html5.nativeAudioTracks = false;
-      // videojs.options.html5.nativeTextTracks = false;
-
       this.player = videojs(this.$refs.s3VideoPlayer, {
         techOrder: ["html5"],
         html5: {

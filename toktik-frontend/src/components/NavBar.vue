@@ -1,9 +1,9 @@
 <template>
-  <b-navbar toggleable="sm">
+  <b-navbar toggleable="sm" class="navbar" fixed="top" justified>
     <b-navbar-brand href="#">
       <img
         src="../assets/logo-icon-small.png"
-        alt="Toktik Logo"
+        alt="Toktik logo"
         style="height: 35px"
       />
       <img
@@ -14,28 +14,80 @@
     </b-navbar-brand>
 
     <b-collapse id="nav-text-collapse" is-nav>
-      <b-navbar-nav justified align="right" fill>
-        <b-nav-item to="/" v-if="isLoggedIn">
-          <b-nav-text>Home</b-nav-text>
-        </b-nav-item>
+      <b-navbar-nav>
         <b-nav-item to="/feed" v-if="isLoggedIn">
-          <b-nav-text>Feed</b-nav-text>
+          <b-nav-text class="navbar-text">Feed</b-nav-text>
         </b-nav-item>
-        <b-nav-item v-if="isLoggedIn">
-          <b-nav-text v-on:click="onLogout">Logout</b-nav-text>
-        </b-nav-item>
-        <b-nav-item to="/login" v-else>
-          <b-nav-text>Login</b-nav-text>
-        </b-nav-item>
-        <b-nav-item to="/register">
-          <b-nav-text>Register</b-nav-text>
+        <b-nav-item to="/" v-if="isLoggedIn">
+          <b-nav-text class="navbar-text">My Videos</b-nav-text>
         </b-nav-item>
         <b-nav-item to="/upload" v-if="isLoggedIn">
-          <b-nav-text>Upload</b-nav-text>
+          <b-nav-text class="navbar-text">Upload</b-nav-text>
+        </b-nav-item>
+      </b-navbar-nav>
+
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item to="/login" v-if="!isLoggedIn">
+          <b-nav-text class="navbar-text">Login</b-nav-text>
+        </b-nav-item>
+        <b-nav-item to="/register" v-if="!isLoggedIn">
+          <b-nav-text class="navbar-text">Register</b-nav-text>
+        </b-nav-item>
+        <b-nav-item v-if="isLoggedIn">
+          <b-iconstack scale="1.2" id="notification-bell">
+            <b-icon stacked style="color: black" icon="bell"></b-icon>
+            <b-icon
+              stacked
+              style="color: white"
+              shift-h="5"
+              shift-v="5"
+              scale="0.55"
+              icon="circle-fill"
+              v-if="notifications.length !== 0"
+            ></b-icon>
+            <b-icon
+              stacked
+              style="color: red"
+              shift-h="5"
+              shift-v="5"
+              scale="0.45"
+              icon="circle-fill"
+              v-if="notifications.length !== 0"
+            ></b-icon>
+          </b-iconstack>
+        </b-nav-item>
+        <b-popover
+          target="notification-bell"
+          class="notification-popover"
+          triggers="focus"
+          title="What's new?"
+          placement="bottomleft"
+          no-fade
+        >
+          <b-card no-body border-variant="white" class="notification-card">
+            <b-list-group v-if="notifications" flush>
+              <b-list-group-item
+                v-for="notification in notifications"
+                :key="notification"
+              >
+                {{ notification }}
+              </b-list-group-item>
+            </b-list-group>
+          </b-card>
+        </b-popover>
+        <b-nav-item v-if="isLoggedIn">
+          <b-icon
+            style="color: black; scale: 1.25"
+            icon="door-open"
+            v-on:click="onLogout"
+          ></b-icon>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
-    <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
+    <b-navbar-toggle
+      style="background: white"
+      target="nav-text-collapse"
+    ></b-navbar-toggle>
   </b-navbar>
 </template>
 
@@ -49,6 +101,12 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      notifications: [
+        "God is dead",
+        "God remains dead",
+        "And we have killed him",
+      ],
+      // notifications: []
     };
   },
   created() {
@@ -84,3 +142,24 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.navbar {
+  background-color: white;
+  height: 60px;
+  border-bottom: 1px solid lightgrey;
+  margin-bottom: -1px;
+}
+
+.navbar-text {
+  font-weight: 700;
+  font-size: 18px;
+  color: #111111;
+}
+
+.notification-card {
+  width: 250px;
+  margin: 0;
+  overflow-y: scroll;
+}
+</style>

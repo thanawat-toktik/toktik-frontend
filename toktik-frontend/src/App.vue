@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <NavBar></NavBar>
-    <router-view />
+    <br />
+    <router-view style="margin-top: 60px" />
     <VideoPopUp></VideoPopUp>
     <GenericInfoModal></GenericInfoModal>
   </div>
