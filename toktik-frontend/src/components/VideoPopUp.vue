@@ -15,25 +15,53 @@
           <VideoPlayer :video="videoId" :playOnce="playOnce"></VideoPlayer>
         </b-col>
         <b-col class="custom-vid-details">
-          <b-row>
-            <b-col>
-              <h1>{{ videoTitle }}</h1>
-              <h5>
-                uploaded by <b>{{ videoOwner }}</b>
-              </h5>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <b-button pill variant="light" @click="onLike">
-                <b-icon icon="heart" v-if="!this.isLiked"></b-icon>
-                <b-icon icon="heart-fill" v-else style="color: red"></b-icon>
-                Nice!
-              </b-button>
-              <br />
-              ({{ likeCount }} thinks so)
-            </b-col>
-          </b-row>
+          <b-card-body
+            style="width: 90%; align-content: center; text-align: left"
+          >
+            <b-row>
+              <b-col>
+                <h1>{{ videoTitle }}</h1>
+                <h5>
+                  uploaded by <b>{{ videoOwner }}</b>
+                </h5>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <b-button pill variant="light" @click="onLike">
+                  <b-icon icon="heart" v-if="!this.isLiked"></b-icon>
+                  <b-icon icon="heart-fill" v-else style="color: red"></b-icon>
+                  Nice!
+                </b-button>
+                ({{ likeCount }} thinks so)
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <h5>Comments</h5>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="10">
+                <b-form-textarea
+                  id="textarea"
+                  placeholder="What do you think?"
+                  rows="2"
+                  no-resize
+                >
+                </b-form-textarea>
+              </b-col>
+              <b-col style="margin: auto" cols="2">
+                <b-button block variant="white">
+                  <img
+                    src="../assets/paper-plane.svg"
+                    alt="Paper plane"
+                    width="25"
+                  />
+                </b-button>
+              </b-col>
+            </b-row>
+          </b-card-body>
         </b-col>
       </b-row>
     </b-card>
@@ -150,7 +178,8 @@ export default {
 }
 
 .custom-vid-details {
-  padding: 10px;
+  padding: 0;
+  margin: 0;
   text-align: left;
 }
 
