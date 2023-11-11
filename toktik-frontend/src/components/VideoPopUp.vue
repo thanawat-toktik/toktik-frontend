@@ -42,17 +42,18 @@
               </b-col>
             </b-row>
             <b-row>
-              <b-col cols="10">
+              <b-col cols="9">
                 <b-form-textarea
                   id="textarea"
                   placeholder="What do you think?"
-                  rows="2"
+                  rows="3"
+                  v-model="userComment"
                   no-resize
                 >
                 </b-form-textarea>
               </b-col>
-              <b-col style="margin: auto" cols="2">
-                <b-button block variant="white">
+              <b-col style="margin: auto" cols="3">
+                <b-button block variant="white" @click="onComment">
                   <img
                     src="../assets/paper-plane.svg"
                     alt="Paper plane"
@@ -88,6 +89,7 @@ export default {
       playOnce: false,
       isLiked: false,
       likeCount: 0,
+      userComment: "",
     };
   },
   async created() {
@@ -159,6 +161,24 @@ export default {
         this.isLiked = !this.isLiked;
         this.likeCount = this.isLiked ? this.likeCount + 1 : this.likeCount - 1;
       }
+    },
+    async onComment() {
+      if (this.comment === "") {
+        return; // don't send empty comments
+      }
+
+      console.log(this.comment);
+      const response = await axios.post(
+          "/api/video/comment/",
+          {
+            video_id: this.videoId,
+            content: this.userComment,
+          },
+          {
+            withCredentials: true,
+          }
+      )
+      console.log(response)
     },
   },
 };
