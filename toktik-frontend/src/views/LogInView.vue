@@ -71,6 +71,7 @@ export default {
         // after login, include jwt token to every header
         localStorage.setItem("jwt-token", response.data.access);
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
+        localStorage.setItem("username", response.data.username);
         instance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
 
