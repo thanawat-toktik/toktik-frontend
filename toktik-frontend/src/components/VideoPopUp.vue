@@ -16,7 +16,7 @@
         </b-col>
         <b-col class="custom-vid-details">
           <b-card-body
-              style="width: 90%; align-content: center; text-align: left"
+            style="width: 90%; align-content: center; text-align: left"
           >
             <b-row>
               <b-col>
@@ -36,29 +36,29 @@
                 ({{ likeCount }} thinks so)
               </b-col>
             </b-row>
-            <br>
+            <br />
             <b-row>
               <b-col cols="9">
                 <b-form-textarea
-                    id="textarea"
-                    placeholder="What do you think?"
-                    rows="3"
-                    v-model="userComment"
-                    no-resize
+                  id="textarea"
+                  placeholder="What do you think?"
+                  rows="3"
+                  v-model="userComment"
+                  no-resize
                 >
                 </b-form-textarea>
               </b-col>
               <b-col style="margin: auto" cols="3">
                 <b-button block variant="white" @click="onComment">
                   <img
-                      src="../assets/paper-plane.svg"
-                      alt="Paper plane"
-                      width="25"
+                    src="../assets/paper-plane.svg"
+                    alt="Paper plane"
+                    width="25"
                   />
                 </b-button>
               </b-col>
             </b-row>
-            <br>
+            <br />
             <b-row>
               <b-col>
                 <h5>Comments</h5>
@@ -66,11 +66,15 @@
             </b-row>
             <b-row>
               <b-col>
-                  <b-list-group class="custom-comment-list" flush>
-                    <b-list-group-item v-for="comment in this.videoComments" v-bind:key="comment">
-                      <b>{{ comment.user }}</b>: {{ comment.content }}
-                    </b-list-group-item>
-                  </b-list-group>
+                <b-list-group class="custom-comment-list" flush>
+                  <b-list-group-item
+                    v-for="comment in this.videoComments"
+                    v-bind:key="comment"
+                  >
+                    <b>{{ comment.user }}</b
+                    >: {{ comment.content }}
+                  </b-list-group-item>
+                </b-list-group>
               </b-col>
             </b-row>
           </b-card-body>
@@ -81,8 +85,8 @@
 </template>
 
 <script>
-import {nextTick} from "vue";
-import {EventBus} from "@/eventBus";
+import { nextTick } from "vue";
+import { EventBus } from "@/eventBus";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import axios from "@/axios";
 
@@ -113,7 +117,7 @@ export default {
       this.videoTitle = video.title;
       this.videoOwner = video.uploader.username;
       await this.fetchLike();
-      await this.fetchComments()
+      await this.fetchComments();
 
       await nextTick();
       this.showPopUp = true;
@@ -148,27 +152,26 @@ export default {
     },
     async fetchLike() {
       await axios
-          .get("/api/video/like/", {
-            withCredentials: true,
-            params: {videoId: this.videoId},
-          })
-          .then((response) => {
-            this.isLiked = response.data.isLiked;
-            this.likeCount = response.data.likeCount;
-          })
-          .catch(() => {
-          });
+        .get("/api/video/like/", {
+          withCredentials: true,
+          params: { videoId: this.videoId },
+        })
+        .then((response) => {
+          this.isLiked = response.data.isLiked;
+          this.likeCount = response.data.likeCount;
+        })
+        .catch(() => {});
     },
     async onLike() {
       const response = await axios.post(
-          "/api/video/like/",
-          {
-            video_id: this.videoId,
-            isLiked: !this.isLiked,
-          },
-          {
-            withCredentials: true,
-          }
+        "/api/video/like/",
+        {
+          video_id: this.videoId,
+          isLiked: !this.isLiked,
+        },
+        {
+          withCredentials: true,
+        }
       );
 
       if (response.status === 201) {
@@ -177,16 +180,18 @@ export default {
       }
     },
     async fetchComments() {
-      axios.get(
-          "/api/video/comment",
-          {
-            withCredentials: true,
-            params: {video_id: this.videoId}
-          }
-      ).then((response) => {
-        this.videoComments = response.data;
-      }).catch(() => {
-      });
+      axios
+        .get("/api/video/comment", {
+          withCredentials: true,
+          params: { video_id: this.videoId },
+        })
+        .then((response) => {
+          this.videoComments = response.data;
+        })
+        .catch(() => {});
+    },
+    appendComment(newComment) {
+      this.videoComments.push(newComment);
     },
     async onComment() {
       if (this.comment === "") {
@@ -194,18 +199,21 @@ export default {
       }
 
       const response = await axios.post(
-          "/api/video/comment/",
-          {
-            video_id: this.videoId,
-            content: this.userComment,
-          },
-          {
-            withCredentials: true,
-          }
-      )
+        "/api/video/comment/",
+        {
+          video_id: this.videoId,
+          content: this.userComment,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       if (response.status === 201) {
+        await this.appendComment({
+          user: localStorage.getItem("username"),
+          content: this.userComment,
+        });
         this.userComment = "";
-        await this.fetchComments();
       }
     },
   },
