@@ -66,15 +66,16 @@
             </b-row>
             <b-row>
               <b-col>
-                <b-list-group class="custom-comment-list" flush>
+                <b-list-group class="custom-comment-list" flush v-if="videoComments.length !== 0">
                   <b-list-group-item
-                    v-for="comment in this.videoComments"
-                    v-bind:key="comment"
+                    v-for="(comment, index) in this.videoComments"
+                    v-bind:key="index"
                   >
                     <b>{{ comment.user }}</b
                     >: {{ comment.content }}
                   </b-list-group-item>
                 </b-list-group>
+                <b-card-text v-else>No comments yet.</b-card-text>
               </b-col>
             </b-row>
           </b-card-body>
