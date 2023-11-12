@@ -48,7 +48,6 @@
 import router from "@/router";
 import axios from "axios";
 import instance from "@/axios";
-import io from "socket.io-client";
 
 export default {
   data() {
@@ -76,13 +75,6 @@ export default {
         instance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
 
-        const socket = io("ws://localhost:3000/", {
-          reconnectionDelayMax: 10000,
-          withCredentials: true,
-        });
-        socket.on("connect", () => {
-          console.log("connected");
-        });
         await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
