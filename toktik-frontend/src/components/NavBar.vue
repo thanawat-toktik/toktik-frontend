@@ -65,14 +65,15 @@
           no-fade
         >
           <b-card no-body border-variant="white" class="notification-card">
-            <b-list-group v-if="notifications" flush>
+            <b-list-group v-if="notifications.length > 0" flush>
               <b-list-group-item
-                v-for="notification in notifications"
-                :key="notification"
+                v-for="(notification, index) in notifications"
+                :key="index"
               >
-                {{ notification }}
+                {{ notification.message }}
               </b-list-group-item>
             </b-list-group>
+            <b-card-text v-else>No notifications.</b-card-text>
           </b-card>
         </b-popover>
         <b-nav-item v-if="isLoggedIn">
@@ -101,12 +102,12 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      notifications: [
-        "God is dead",
-        "God remains dead",
-        "And we have killed him",
-      ],
-      // notifications: []
+      // notifications: [
+      //   "God is dead",
+      //   "God remains dead",
+      //   "And we have killed him",
+      // ],
+      notifications: []
     };
   },
   created() {
@@ -124,20 +125,19 @@ export default {
     },
 
     async onLogout() {
-      const token = localStorage.getItem("jwt-token");
-      const token_refresh = localStorage.getItem("jwt-token-refresh");
-      if (token) {
-        localStorage.removeItem("jwt-token");
-        axios.defaults.headers.common["Authorization"] = "";
-      }
-      if (token_refresh) {
-        localStorage.removeItem("jwt-token-refresh");
-      }
+      localStorage.clear()
+      axios.defaults.headers.common["Authorization"] = "";
       EventBus.$emit("show-modal", {
         title: "Log-out Successful",
         message: "You are now logged out!",
       });
       await router.push({ name: "login" });
+    },
+  },
+
+  sockets: {
+    [`user-${localStorage.getItem("userId")}`]: function (data) {
+      this.notifications.push(data);
     },
   },
 };
