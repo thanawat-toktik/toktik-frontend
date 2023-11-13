@@ -58,6 +58,7 @@
           </b-iconstack>
         </b-nav-item>
         <b-popover
+            v-if="isLoggedIn"
             target="notification-bell"
             class="notification-popover"
             triggers="focus"
@@ -161,7 +162,10 @@ export default {
 
   sockets: {
     [`user-${localStorage.getItem("userId")}`]: function (data) {
-      this.notifications.push(data);
+      this.notifications.unshift(data);
+      if (this.notifications.length > 5) {
+        this.notifications.pop();
+      }
     },
   },
 };
