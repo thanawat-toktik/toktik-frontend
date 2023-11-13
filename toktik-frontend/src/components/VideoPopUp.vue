@@ -24,6 +24,7 @@
                 <h5>
                   uploaded by <b>{{ videoOwner }}</b>
                 </h5>
+                <h6>{{ videoViews }} views so far</h6>
               </b-col>
             </b-row>
             <b-row>
@@ -66,15 +67,16 @@
             </b-row>
             <b-row>
               <b-col>
-                <b-list-group class="custom-comment-list" flush>
+                <b-list-group class="custom-comment-list" flush v-if="videoComments.length !== 0">
                   <b-list-group-item
-                    v-for="comment in this.videoComments"
-                    v-bind:key="comment"
+                    v-for="(comment, index) in this.videoComments"
+                    v-bind:key="index"
                   >
                     <b>{{ comment.user }}</b
                     >: {{ comment.content }}
                   </b-list-group-item>
                 </b-list-group>
+                <b-card-text v-else>No comments yet.</b-card-text>
               </b-col>
             </b-row>
           </b-card-body>
@@ -101,11 +103,13 @@ export default {
       videoId: -1,
       videoTitle: "",
       videoOwner: "",
+      videoViews: 0,
       playOnce: false,
       isLiked: false,
       videoComments: [],
       likeCount: 0,
       userComment: "",
+      intervalId: -1,
     };
   },
   async created() {
@@ -116,7 +120,7 @@ export default {
       this.videoId = video.id;
       this.videoTitle = video.title;
       this.videoOwner = video.uploader.username;
-      await this.fetchLike();
+      await this.fetchStats();
       await this.fetchComments();
 
       await nextTick();
@@ -135,6 +139,11 @@ export default {
       this.videoId = -1;
     });
   },
+  async mounted() {
+    this.intervalId = setInterval(async () => {
+      await this.fetchStats();
+    }, 10000);
+  },
   destroyed() {
     EventBus.$off("play-video");
     EventBus.$off("play-video-once");
@@ -143,6 +152,7 @@ export default {
   methods: {
     closePopUp() {
       this.showPopUp = false;
+      clearInterval(this.intervalId);
     },
     nextVideo() {
       EventBus.$emit("play-next-video");
@@ -150,15 +160,21 @@ export default {
     prevVideo() {
       EventBus.$emit("play-prev-video");
     },
-    async fetchLike() {
+    async fetchStats() {
+      if (this.videoId === -1) {
+        return;
+      }
+
       await axios
-        .get("/api/video/like/", {
+        .post("/api/video/get-counts/", {
+          video_ids: [this.videoId],
+        },{
           withCredentials: true,
-          params: { videoId: this.videoId },
         })
         .then((response) => {
-          this.isLiked = response.data.isLiked;
-          this.likeCount = response.data.likeCount;
+          this.videoViews = response.data.statistics[0].views;
+          this.isLiked = response.data.statistics[0].isLiked;
+          this.likeCount = response.data.statistics[0].likes;
         })
         .catch(() => {});
     },

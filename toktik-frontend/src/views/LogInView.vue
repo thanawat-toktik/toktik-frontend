@@ -48,6 +48,7 @@
 import router from "@/router";
 import axios from "axios";
 import instance from "@/axios";
+import {EventBus} from "@/eventBus";
 
 export default {
   data() {
@@ -72,9 +73,12 @@ export default {
         localStorage.setItem("jwt-token", response.data.access);
         localStorage.setItem("jwt-token-refresh", response.data.refresh);
         localStorage.setItem("username", response.data.username);
+        localStorage.setItem("userId", response.data.user_id);
         instance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
 
+        EventBus.$emit("fetch-notifications");
+        EventBus.$emit("check-login");
         await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
