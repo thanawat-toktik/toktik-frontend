@@ -48,6 +48,7 @@
 import router from "@/router";
 import axios from "axios";
 import instance from "@/axios";
+import {EventBus} from "@/eventBus";
 
 export default {
   data() {
@@ -76,6 +77,7 @@ export default {
         instance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.access;
 
+        EventBus.$emit("fetch-notifications");
         await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";
