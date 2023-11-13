@@ -36,6 +36,11 @@ export default {
   mounted() {
     this.videoId = this.video;
     this.videoLoaded = false;
+    this.sockets.subscribe(`video-comment-${this.video}`, (data) => {
+      if ( data.user_id !== parseInt(localStorage.getItem("userId")) ) {
+        EventBus.$emit('update-comment', data)
+      }
+    });
     this.getVideo();
   },
   beforeDestroy() {
@@ -45,6 +50,7 @@ export default {
     if (this.player) {
       this.player.dispose();
     }
+    this.sockets.unsubscribe(`video-comment-${this.video}`)
   },
   methods: {
     async getVideo() {
