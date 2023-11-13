@@ -78,6 +78,7 @@ export default {
           "Bearer " + response.data.access;
 
         EventBus.$emit("fetch-notifications");
+        EventBus.$emit("check-login");
         await router.push({ name: "feed" });
       } catch (error) {
         this.error = "An error occurred during login. Please try again.";

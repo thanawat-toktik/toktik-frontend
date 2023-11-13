@@ -33,7 +33,7 @@
         <b-nav-item to="/register" v-if="!isLoggedIn">
           <b-nav-text class="navbar-text">Register</b-nav-text>
         </b-nav-item>
-        <b-nav-item>Logged in as <b>{{ username }}</b></b-nav-item>
+        <b-nav-item v-if="isLoggedIn">Logged in as <b>{{ username }}</b></b-nav-item>
         <b-nav-item v-if="isLoggedIn">
           <b-iconstack scale="1.2" id="notification-bell">
             <b-icon stacked style="color: black" icon="bell"></b-icon>
@@ -128,11 +128,17 @@ export default {
       })
     })
 
-    if (this.notifications.length <= 0) {
+    EventBus.$on("check-login", () => {
+      this.username = localStorage.getItem("username");
+    })
+
+    if (this.notifications.length <= 0 && this.isLoggedIn) {
       EventBus.$emit("fetch-notifications");
     }
 
-    this.username = localStorage.getItem("username");
+    if (this.isLoggedIn) {
+      this.username = localStorage.getItem("username");
+    }
   },
   methods: {
     async checkToken() {
