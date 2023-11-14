@@ -106,14 +106,14 @@ export default {
       this.videos.forEach((video) => {
         videoIds.push(video.id);
       });
-      const response = await axios.post(
+      const response = await axios.get(
           `/api/video/get-counts/`,
           {
-            video_ids: videoIds,
-          },
-          {
             withCredentials: true,
-          }
+            params: {
+              video_ids: videoIds.join(","),
+            },
+          },
       );
       const responseIds = response.data.video_ids;
       const statistics = response.data.statistics;

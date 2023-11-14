@@ -166,10 +166,11 @@ export default {
       }
 
       await axios
-        .post("/api/video/get-counts/", {
-          video_ids: [this.videoId],
-        },{
+        .get("/api/video/get-counts/", {
           withCredentials: true,
+          params: {
+            video_ids: this.videoId
+          },
         })
         .then((response) => {
           this.videoViews = response.data.statistics[0].views;
