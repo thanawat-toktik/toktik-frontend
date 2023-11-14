@@ -114,6 +114,7 @@ export default {
       notifications: [],
       username: "",
       hasUnseenNotifications: false,
+      sfx: null,
     };
   },
   async created() {
@@ -213,6 +214,8 @@ export default {
         this.notifications.pop();
       }
       this.updateUnseenNotifications();
+      const audio = new Audio(require("@/assets/sfx/rizz.mp3"));
+      audio.play()
     },
   },
 };
