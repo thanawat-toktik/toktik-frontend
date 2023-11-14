@@ -7,9 +7,9 @@
       <div v-for="(video, index) in videos" :key="index" class="video_block">
         <div>
           <img
-              :src="video_thumbnails[index]"
-              alt="Thumbnail"
-              @click="viewVideo(video, index)"
+            :src="video_thumbnails[index]"
+            alt="Thumbnail"
+            @click="viewVideo(video, index)"
           />
         </div>
         <div class="video_block__text">
@@ -24,7 +24,7 @@
 
 <script>
 import axios from "@/axios";
-import {EventBus} from "@/eventBus";
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -95,7 +95,7 @@ export default {
         }
       } catch (error) {
         this.error =
-            "An error occurred during fetching video feed. Please try again.";
+          "An error occurred during fetching video feed. Please try again.";
         console.error("Error:", error);
       }
     },
@@ -106,19 +106,18 @@ export default {
       this.videos.forEach((video) => {
         videoIds.push(video.id);
       });
-      const response = await axios.get(
-          `/api/video/get-counts/`,
-          {
-            withCredentials: true,
-            params: {
-              video_ids: videoIds.join(","),
-            },
-          },
-      );
+      const response = await axios.get(`/api/video/get-counts/`, {
+        withCredentials: true,
+        params: {
+          video_ids: videoIds.join(","),
+        },
+      });
       const responseIds = response.data.video_ids;
       const statistics = response.data.statistics;
       for (let idIndex in responseIds) {
-        const video = this.videos.find((video) => video.id === responseIds[idIndex]);
+        const video = this.videos.find(
+          (video) => video.id === responseIds[idIndex]
+        );
         video.view = statistics[idIndex].views;
         video.like = statistics[idIndex].likes;
       }

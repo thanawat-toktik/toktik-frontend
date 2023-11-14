@@ -13,9 +13,11 @@ export const SocketInstance = SocketIOSocket("ws://localhost:3000/", {
   reconnectionDelayMax: 10000,
   withCredentials: true,
 });
-Vue.use(new VueSocketIO({
-  connection: SocketInstance,
-}));
+Vue.use(
+  new VueSocketIO({
+    connection: SocketInstance,
+  })
+);
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // TODO: dangerous remove this if possible
 

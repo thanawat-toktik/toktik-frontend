@@ -67,7 +67,11 @@
             </b-row>
             <b-row>
               <b-col>
-                <b-list-group class="custom-comment-list" flush v-if="videoComments.length !== 0">
+                <b-list-group
+                  class="custom-comment-list"
+                  flush
+                  v-if="videoComments.length !== 0"
+                >
                   <b-list-group-item
                     v-for="(comment, index) in this.videoComments"
                     v-bind:key="index"
@@ -169,7 +173,7 @@ export default {
         .get("/api/video/get-counts/", {
           withCredentials: true,
           params: {
-            video_ids: this.videoId
+            video_ids: this.videoId,
           },
         })
         .then((response) => {

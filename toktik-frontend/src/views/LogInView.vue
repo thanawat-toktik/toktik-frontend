@@ -48,7 +48,7 @@
 import router from "@/router";
 import axios from "axios";
 import instance from "@/axios";
-import {EventBus} from "@/eventBus";
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
