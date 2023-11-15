@@ -16,6 +16,7 @@
           <h4>{{ video.title }}</h4>
           <p>By: {{ video.uploader.username }}</p>
           <p>{{ video.view }} views</p>
+          <p>{{ video.like }} likes</p>
         </div>
       </div>
     </div>
@@ -38,7 +39,6 @@ export default {
   },
   async mounted() {
     await this.fetchVideos();
-    await this.fetchVideoStats();
     this.intervalId = setInterval(async () => {
       await this.fetchVideoStats();
     }, 10000);
@@ -93,6 +93,8 @@ export default {
         if (this.video_ids.length !== 0) {
           await this.fetchThumbnails();
         }
+
+        await this.fetchVideoStats();
       } catch (error) {
         this.error =
           "An error occurred during fetching video feed. Please try again.";
@@ -119,7 +121,7 @@ export default {
           (video) => video.id === responseIds[idIndex]
         );
         video.view = statistics[idIndex].views;
-        video.like = statistics[idIndex].likes;
+        this.$set(video, "like", statistics[idIndex].likes);
       }
     },
 
@@ -167,7 +169,7 @@ export default {
   padding-left: 15%;
   padding-top: 5px;
   text-align: left;
-  max-width: 85%;
+  max-width: 95%;
 }
 
 .video_block__text p,
