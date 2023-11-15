@@ -142,6 +142,10 @@ export default {
       this.showVideo = false;
       this.videoId = -1;
     });
+
+    EventBus.$on("update-comment", (payload) => {
+      this.appendComment(payload)
+    });
   },
   async mounted() {
     this.intervalId = setInterval(async () => {
