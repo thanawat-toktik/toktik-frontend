@@ -7,15 +7,16 @@
       <div v-for="(video, index) in videos" :key="index" class="video_block">
         <div>
           <img
-              :src="video_thumbnails[index]"
-              alt="Thumbnail"
-              @click="viewVideo(video, index)"
+            :src="video_thumbnails[index]"
+            alt="Thumbnail"
+            @click="viewVideo(video, index)"
           />
         </div>
         <div class="video_block__text">
           <h4>{{ video.title }}</h4>
           <p>By: {{ video.uploader.username }}</p>
           <p>{{ video.view }} views</p>
+          <p>{{ video.like }} likes</p>
         </div>
       </div>
     </div>
@@ -24,7 +25,7 @@
 
 <script>
 import axios from "@/axios";
-import {EventBus} from "@/eventBus";
+import { EventBus } from "@/eventBus";
 
 export default {
   data() {
@@ -38,7 +39,6 @@ export default {
   },
   async mounted() {
     await this.fetchVideos();
-    await this.fetchVideoStats();
     this.intervalId = setInterval(async () => {
       await this.fetchVideoStats();
     }, 10000);
@@ -93,9 +93,11 @@ export default {
         if (this.video_ids.length !== 0) {
           await this.fetchThumbnails();
         }
+
+        await this.fetchVideoStats();
       } catch (error) {
         this.error =
-            "An error occurred during fetching video feed. Please try again.";
+          "An error occurred during fetching video feed. Please try again.";
         console.error("Error:", error);
       }
     },
@@ -106,21 +108,20 @@ export default {
       this.videos.forEach((video) => {
         videoIds.push(video.id);
       });
-      const response = await axios.post(
-          `/api/video/get-counts/`,
-          {
-            video_ids: videoIds,
-          },
-          {
-            withCredentials: true,
-          }
-      );
+      const response = await axios.get(`/api/video/get-counts/`, {
+        withCredentials: true,
+        params: {
+          video_ids: videoIds.join(","),
+        },
+      });
       const responseIds = response.data.video_ids;
       const statistics = response.data.statistics;
       for (let idIndex in responseIds) {
-        const video = this.videos.find((video) => video.id === responseIds[idIndex]);
+        const video = this.videos.find(
+          (video) => video.id === responseIds[idIndex]
+        );
         video.view = statistics[idIndex].views;
-        video.like = statistics[idIndex].likes;
+        this.$set(video, "like", statistics[idIndex].likes);
       }
     },
 
@@ -168,7 +169,7 @@ export default {
   padding-left: 15%;
   padding-top: 5px;
   text-align: left;
-  max-width: 85%;
+  max-width: 95%;
 }
 
 .video_block__text p,

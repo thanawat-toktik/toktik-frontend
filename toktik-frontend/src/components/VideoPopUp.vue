@@ -67,7 +67,11 @@
             </b-row>
             <b-row>
               <b-col>
-                <b-list-group class="custom-comment-list" flush v-if="videoComments.length !== 0">
+                <b-list-group
+                  class="custom-comment-list"
+                  flush
+                  v-if="videoComments.length !== 0"
+                >
                   <b-list-group-item
                     v-for="(comment, index) in this.videoComments"
                     v-bind:key="index"
@@ -166,10 +170,11 @@ export default {
       }
 
       await axios
-        .post("/api/video/get-counts/", {
-          video_ids: [this.videoId],
-        },{
+        .get("/api/video/get-counts/", {
           withCredentials: true,
+          params: {
+            video_ids: this.videoId,
+          },
         })
         .then((response) => {
           this.videoViews = response.data.statistics[0].views;
