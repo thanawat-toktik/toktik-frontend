@@ -67,12 +67,14 @@
           title="What's new?"
           placement="bottomleft"
           no-fade
+          @hidden="onBellHidden"
         >
           <b-card no-body border-variant="white" class="notification-card">
             <b-list-group v-if="notifications.length > 0" flush>
               <b-list-group-item
                 v-for="(notification, index) in notifications"
                 :key="index"
+                :style="notification.isSeen ? {'background-color': 'white'} : {'background-color': 'lightyellow'}"
               >
                 {{ notification.message }}
               </b-list-group-item>
@@ -115,6 +117,7 @@ export default {
       username: "",
       hasUnseenNotifications: false,
       sfx: null,
+      updateUnseenSuccessful: false,
     };
   },
   async created() {
@@ -195,16 +198,23 @@ export default {
         )
         .then((response) => {
           if (response.status === 201) {
-            this.notifications.forEach((notification) => {
-              notification.isSeen = true;
-            });
-            this.updateUnseenNotifications();
+            this.updateUnseenSuccessful = true;
           }
         })
         .catch((error) => {
           console.error(error);
         });
     },
+
+    onBellHidden() {
+      if (this.updateUnseenSuccessful) {
+        this.notifications.forEach((notification) => {
+          notification.isSeen = true;
+        });
+        this.updateUnseenNotifications();
+        this.updateUnseenSuccessful = false;
+      }
+    }
   },
 
   sockets: {
