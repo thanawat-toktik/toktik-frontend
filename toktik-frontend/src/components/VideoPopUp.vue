@@ -144,7 +144,7 @@ export default {
     });
 
     EventBus.$on("update-comment", (payload) => {
-      this.appendComment(payload)
+      this.appendComment(payload);
     });
   },
   async mounted() {

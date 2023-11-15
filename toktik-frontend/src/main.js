@@ -10,7 +10,7 @@ import SocketIOSocket from "socket.io-client";
 import VideoPlayer from "./components/VideoPlayer.vue";
 
 export const SocketInstance = SocketIOSocket(
-  `ws://${process.env.VUE_APP_WS_HOST}:${process.env.VUE_APP_WS_PORT}/`, 
+  `ws://${window.location.host}/`,
   {
     reconnectionDelayMax: 10000,
     withCredentials: true,
