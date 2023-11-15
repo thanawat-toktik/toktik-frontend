@@ -9,10 +9,13 @@ import SocketIOSocket from "socket.io-client";
 
 import VideoPlayer from "./components/VideoPlayer.vue";
 
-export const SocketInstance = SocketIOSocket("ws://localhost:3000/", {
-  reconnectionDelayMax: 10000,
-  withCredentials: true,
-});
+export const SocketInstance = SocketIOSocket(
+  `ws://${process.env.VUE_APP_WS_HOST}:${process.env.VUE_APP_WS_PORT}/`, 
+  {
+    reconnectionDelayMax: 10000,
+    withCredentials: true,
+  }
+);
 Vue.use(
   new VueSocketIO({
     connection: SocketInstance,
