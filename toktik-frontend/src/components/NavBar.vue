@@ -33,9 +33,14 @@
         <b-nav-item to="/register" v-if="!isLoggedIn">
           <b-nav-text class="navbar-text">Register</b-nav-text>
         </b-nav-item>
-        <b-nav-item v-if="isLoggedIn"
-          >Logged in as <b>{{ username }}</b></b-nav-item
-        >
+        <b-nav-item v-if="isLoggedIn">
+          You have
+          {{
+            this.notifications.filter((notification) => !notification.isSeen)
+              .length
+          }}
+          new notifications and is logged in as <b>{{ username }}</b>
+        </b-nav-item>
         <b-nav-item v-if="isLoggedIn" @click="onBellRung">
           <b-iconstack scale="1.2" id="notification-bell">
             <b-icon stacked style="color: black" icon="bell"></b-icon>
@@ -74,7 +79,11 @@
               <b-list-group-item
                 v-for="(notification, index) in notifications"
                 :key="index"
-                :style="notification.isSeen ? {'background-color': 'white'} : {'background-color': 'lightyellow'}"
+                :style="
+                  notification.isSeen
+                    ? { 'background-color': 'white' }
+                    : { 'background-color': 'lightyellow' }
+                "
               >
                 {{ notification.message }}
               </b-list-group-item>
@@ -214,7 +223,7 @@ export default {
         this.updateUnseenNotifications();
         this.updateUnseenSuccessful = false;
       }
-    }
+    },
   },
 
   sockets: {
@@ -225,7 +234,7 @@ export default {
       }
       this.updateUnseenNotifications();
       const audio = new Audio(require("@/assets/sfx/rizz.mp3"));
-      audio.play()
+      audio.play();
     },
   },
 };
