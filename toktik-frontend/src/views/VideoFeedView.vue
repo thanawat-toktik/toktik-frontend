@@ -103,6 +103,10 @@ export default {
     },
 
     async fetchVideoStats() {
+      if (this.videos.length === 0) {
+        return; // don't send when empty
+      }
+
       // because Vue >:(
       const videoIds = [];
       this.videos.forEach((video) => {
